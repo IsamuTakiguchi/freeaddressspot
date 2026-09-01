@@ -46,8 +46,8 @@ NFCタグ（座席ごと）
 
 **① Postgres**: 「Add Service → Database → PostgreSQL」
 
-**② web（アプリ本体）**: 「Add Service → GitHub Repo」でこのリポジトリを選択（DockerfileがあるのでDockerビルドされます）
-- Settings → Deploy → **Pre-Deploy Command**: `node scripts/migrate.mjs`（デプロイ前にマイグレーションを適用）
+**② web（アプリ本体）**: 「Add Service → GitHub Repo」でこのリポジトリを選択
+- リポジトリ同梱の `railway.json` により、Dockerビルド・マイグレーション自動適用（Pre-Deploy）・ヘルスチェック（`/api/health`）は**自動設定されます**
 - Settings → Networking → Generate Domain（またはカスタムドメイン設定）
 - Variables に以下を設定:
 
@@ -63,8 +63,8 @@ NFCタグ（座席ごと）
 
 **③ cron（深夜リセット）**: 同じリポジトリをもう1サービス追加
 - Variables: `DATABASE_URL` = `${{Postgres.DATABASE_URL}}` のみでOK
-- Settings → Deploy → **Custom Start Command**: `node scripts/nightly-reset.mjs`
-- Settings → **Cron Schedule**: `0 19 * * *`（UTC 19:00 = JST 翌4:00）
+- Settings → Config-as-code → **Railway Config File** に `railway.cron.json` を指定
+  （これだけで Start Command と Cron Schedule `0 19 * * *`（UTC 19:00 = JST 翌4:00）が設定されます）
 - ドメインは不要（公開しない）
 
 ### 3. 初期データと管理者設定
