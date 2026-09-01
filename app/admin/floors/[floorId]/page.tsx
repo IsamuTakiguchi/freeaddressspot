@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { notFound } from "next/navigation";
+import { requireAdmin } from "@/lib/auth-helpers";
+import { queryOne, toIso } from "@/lib/db";
+import { listSeats } from "@/lib/queries";
 import { floorImageUrl } from "@/lib/floor-image";
 import FloorEditor from "@/components/admin/FloorEditor";
 
@@ -12,31 +14,22 @@ export default async function FloorEditPage({
   params: Promise<{ floorId: string }>;
 }) {
   const { floorId } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect(`/login?next=${encodeURIComponent(`/admin/floors/${floorId}`)}`);
+  await requireAdmin(`/admin/floors/${floorId}`);
 
-  const { data: me } = await supabase
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .single();
-  if (!me?.is_admin) redirect("/admin");
-
-  const { data: floor } = await supabase
-    .from("floors")
-    .select("id, name, image_path, image_width, image_height")
-    .eq("id", floorId)
-    .maybeSingle();
+  const floor = await queryOne<{
+    id: string;
+    name: string;
+    image_updated_at: Date;
+    image_width: number;
+    image_height: number;
+  }>(
+    `select id, name, image_updated_at, image_width, image_height
+       from floors where id = $1`,
+    [floorId]
+  );
   if (!floor) notFound();
 
-  const { data: seats } = await supabase
-    .from("seats")
-    .select("id, floor_id, label, x, y, is_active")
-    .eq("floor_id", floorId)
-    .order("label");
+  const seats = await listSeats({ floorId });
 
   return (
     <main className="mx-auto max-w-6xl p-4 sm:p-6">
@@ -52,15 +45,14 @@ export default async function FloorEditPage({
         floor={{
           id: floor.id,
           name: floor.name,
-          image_url: floorImageUrl(floor),
+          image_url: floorImageUrl({
+            id: floor.id,
+            image_updated_at: toIso(floor.image_updated_at)!,
+          }),
           image_width: floor.image_width,
           image_height: floor.image_height,
         }}
-        initialSeats={(seats ?? []).map((s) => ({
-          ...s,
-          x: Number(s.x),
-          y: Number(s.y),
-        }))}
+        initialSeats={seats}
       />
     </main>
   );

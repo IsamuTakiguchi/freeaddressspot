@@ -1,7 +1,0 @@
-# Supabase CLI 設定（マイグレーション管理用）
-# クラウドプロジェクトに `supabase link --project-ref <ref>` で接続し、
-# `supabase db push` でマイグレーションを適用する運用を想定
-project_id = "freeaddressspot"
-
-[db]
-major_version = 17

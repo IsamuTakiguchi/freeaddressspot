@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth-helpers";
+import { query } from "@/lib/db";
 import { businessDays, resolveRange } from "@/lib/report-range";
 import BarList from "@/components/reports/BarList";
 
@@ -12,39 +12,29 @@ export default async function ReportsPage({
   searchParams: Promise<{ range?: string }>;
 }) {
   const { range: rangeParam } = await searchParams;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login?next=/reports");
-
-  const { data: me } = await supabase
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .single();
-  if (!me?.is_admin) redirect("/map");
+  await requireAdmin("/reports");
 
   const range = resolveRange(rangeParam);
   const bizDays = businessDays(range.from, range.to);
 
-  const [attendanceRes, usageRes, seatCountRes] = await Promise.all([
-    supabase
-      .from("attendance_days")
-      .select("day, user_id, display_name, department")
-      .gte("day", range.from)
-      .lte("day", range.to),
-    supabase
-      .from("seat_usage_days")
-      .select("day, seat_id, label, floor_name")
-      .gte("day", range.from)
-      .lte("day", range.to),
-    supabase.from("seats").select("id, label, floor_id").eq("is_active", true),
+  const [attendance, usage, activeSeats] = await Promise.all([
+    query<{
+      day: string;
+      user_id: string;
+      display_name: string;
+      department: string | null;
+    }>(
+      `select day::text, user_id, display_name, department
+         from attendance_days where day between $1 and $2`,
+      [range.from, range.to]
+    ),
+    query<{ day: string; seat_id: string; label: string; floor_name: string }>(
+      `select day::text, seat_id, label, floor_name
+         from seat_usage_days where day between $1 and $2`,
+      [range.from, range.to]
+    ),
+    query<{ id: string }>(`select id from seats where is_active = true`),
   ]);
-
-  const attendance = attendanceRes.data ?? [];
-  const usage = usageRes.data ?? [];
-  const activeSeats = seatCountRes.data ?? [];
 
   // 日別出社人数
   const byDay = new Map<string, number>();
@@ -78,7 +68,10 @@ export default async function ReportsPage({
     }));
 
   // 席別稼働率（利用日数 / 営業日数）
-  const bySeat = new Map<string, { label: string; floor: string; days: number }>();
+  const bySeat = new Map<
+    string,
+    { label: string; floor: string; days: number }
+  >();
   for (const u of usage) {
     const entry = bySeat.get(u.seat_id) ?? {
       label: u.label,

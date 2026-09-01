@@ -1,4 +1,4 @@
-// サンプル図面SVGと seed.sql を、同一の座席座標定義から生成する
+// サンプル図面SVGを生成する（座席座標の定義は scripts/seed.mjs と一致させること）
 import { writeFileSync } from "node:fs";
 
 const W = 1600, H = 900;
@@ -53,21 +53,4 @@ for (const d of desks) {
 svg += "</svg>\n";
 writeFileSync("public/floors/sample-floor.svg", svg);
 
-const FLOOR_ID = "11111111-1111-4111-8111-111111111111";
-let sql = `-- サンプルデータ（動作確認用）。本運用では管理画面からフロア・座席を登録する
-insert into public.floors (id, name, image_path, image_width, image_height, sort_order)
-values ('${FLOOR_ID}', 'サンプルオフィス 1F', '/floors/sample-floor.svg', ${W}, ${H}, 0);
-
-insert into public.seats (floor_id, label, x, y) values
-`;
-sql += desks
-  .map((d) => {
-    const w = d.w ?? 120, h = d.h ?? 68;
-    const rx = ((d.x + w / 2) / W).toFixed(6);
-    const ry = ((d.y + h / 2) / H).toFixed(6);
-    return `  ('${FLOOR_ID}', '${d.label}', ${rx}, ${ry})`;
-  })
-  .join(",\n");
-sql += ";\n";
-writeFileSync("supabase/seed.sql", sql);
-console.log(`generated: ${desks.length} seats`);
+console.log(`generated: ${desks.length} seats (seed data is in scripts/seed.mjs)`);

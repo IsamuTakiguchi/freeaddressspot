@@ -1,6 +1,11 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/auth-helpers";
+import {
+  getFloorName,
+  getMyActiveSeat,
+  getSeat,
+  getSeatOccupant,
+} from "@/lib/queries";
 import { checkInAction } from "@/app/checkin/actions";
 
 export const dynamic = "force-dynamic";
@@ -22,20 +27,14 @@ export default async function CheckinPage({
 }) {
   const { seatId } = await params;
   const flags = await searchParams;
+  const user = await requireUser(`/checkin/${seatId}`);
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect(`/login?next=${encodeURIComponent(`/checkin/${seatId}`)}`);
-  }
-
-  const { data: seat } = await supabase
-    .from("seats")
-    .select("id, label, is_active, floor_id")
-    .eq("id", seatId)
-    .maybeSingle();
+  // UUID以外はDBに投げず404扱い
+  const isUuid =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      seatId
+    );
+  const seat = isUuid ? await getSeat(seatId) : null;
 
   if (!seat || !seat.is_active || flags.invalid) {
     return (
@@ -51,46 +50,16 @@ export default async function CheckinPage({
     );
   }
 
-  const [floorRes, occupantRes, mySessionRes] = await Promise.all([
-    supabase.from("floors").select("name").eq("id", seat.floor_id).single(),
-    supabase
-      .from("seat_sessions")
-      .select("user_id")
-      .eq("seat_id", seatId)
-      .is("checked_out_at", null)
-      .maybeSingle(),
-    supabase
-      .from("seat_sessions")
-      .select("seat_id")
-      .eq("user_id", user.id)
-      .is("checked_out_at", null)
-      .maybeSingle(),
+  const [floorName, occupant, mySeat] = await Promise.all([
+    getFloorName(seat.floor_id),
+    getSeatOccupant(seat.id),
+    getMyActiveSeat(user.id),
   ]);
 
-  const floorName = floorRes.data?.name ?? "";
   const seatTitle = `${floorName} ${seat.label}`.trim();
-  const occupant = occupantRes.data;
-
-  let occupantName = "利用者";
-  if (occupant && occupant.user_id !== user.id) {
-    const { data: occupantProfile } = await supabase
-      .from("profiles")
-      .select("display_name")
-      .eq("id", occupant.user_id)
-      .maybeSingle();
-    if (occupantProfile) occupantName = occupantProfile.display_name;
-  }
-
-  let mySeatLabel: string | null = null;
-  const mySeatId = mySessionRes.data?.seat_id;
-  if (mySeatId && mySeatId !== seatId) {
-    const { data: mySeat } = await supabase
-      .from("seats")
-      .select("label")
-      .eq("id", mySeatId)
-      .maybeSingle();
-    mySeatLabel = mySeat?.label ?? null;
-  }
+  const occupantName = occupant?.display_name ?? "利用者";
+  const mySeatLabel =
+    mySeat && mySeat.seat_id !== seat.id ? mySeat.label : null;
 
   // チェックイン完了
   if (flags.done) {

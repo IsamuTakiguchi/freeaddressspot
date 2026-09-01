@@ -3,13 +3,11 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import type { Floor } from "@/lib/database.types";
-
-type FloorRow = Pick<
-  Floor,
-  "id" | "name" | "image_path" | "image_width" | "image_height" | "sort_order"
->;
+import {
+  createFloorAction,
+  deleteFloorAction,
+  type AdminFloor,
+} from "@/app/admin/actions";
 
 // 画像ファイルから実寸を取得する
 function readImageSize(file: File): Promise<{ width: number; height: number }> {
@@ -28,7 +26,7 @@ function readImageSize(file: File): Promise<{ width: number; height: number }> {
 export default function FloorAdminList({
   initialFloors,
 }: {
-  initialFloors: FloorRow[];
+  initialFloors: AdminFloor[];
 }) {
   const router = useRouter();
   const [floors, setFloors] = useState(initialFloors);
@@ -45,29 +43,20 @@ export default function FloorAdminList({
     setBusy(true);
     setError(null);
     try {
-      const supabase = createClient();
       const { width, height } = await readImageSize(file);
-      const ext = file.name.split(".").pop()?.toLowerCase() ?? "png";
-      const path = `${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from("floors")
-        .upload(path, file, { contentType: file.type });
-      if (upErr) throw upErr;
+      const formData = new FormData();
+      formData.set("name", name);
+      formData.set("image", file);
+      formData.set("width", String(width));
+      formData.set("height", String(height));
+      formData.set("sort_order", String(floors.length));
 
-      const { data, error: insErr } = await supabase
-        .from("floors")
-        .insert({
-          name,
-          image_path: path,
-          image_width: width,
-          image_height: height,
-          sort_order: floors.length,
-        })
-        .select()
-        .single();
-      if (insErr) throw insErr;
-
-      setFloors([...floors, data]);
+      const result = await createFloorAction(formData);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setFloors([...floors, result.data]);
       if (nameRef.current) nameRef.current.value = "";
       if (fileRef.current) fileRef.current.value = "";
       router.refresh();
@@ -78,7 +67,7 @@ export default function FloorAdminList({
     }
   }
 
-  async function removeFloor(floor: FloorRow) {
+  async function removeFloor(floor: AdminFloor) {
     if (
       !confirm(
         `「${floor.name}」を削除しますか？\nこのフロアの座席と着席履歴もすべて削除されます。`
@@ -88,15 +77,10 @@ export default function FloorAdminList({
     setBusy(true);
     setError(null);
     try {
-      const supabase = createClient();
-      const { error: delErr } = await supabase
-        .from("floors")
-        .delete()
-        .eq("id", floor.id);
-      if (delErr) throw delErr;
-      // Storage上の画像も削除（seed由来のパスは対象外）
-      if (!floor.image_path.startsWith("/") && !floor.image_path.startsWith("http")) {
-        await supabase.storage.from("floors").remove([floor.image_path]);
+      const result = await deleteFloorAction(floor.id);
+      if (!result.ok) {
+        setError(result.error);
+        return;
       }
       setFloors(floors.filter((f) => f.id !== floor.id));
       router.refresh();
@@ -168,7 +152,7 @@ export default function FloorAdminList({
           className="w-full text-sm"
         />
         <p className="text-xs text-gray-500">
-          オフィス図面の画像（PNG/JPEG/SVG/WebP）をアップロードします
+          オフィス図面の画像（PNG/JPEG/SVG/WebP、8MBまで）をアップロードします
         </p>
         <button
           disabled={busy}

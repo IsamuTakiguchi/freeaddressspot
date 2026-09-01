@@ -1,62 +1,45 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import type { ActiveSession, ProfileLite } from "@/lib/map-types";
 
-const POLL_INTERVAL_MS = 30_000;
+const POLL_INTERVAL_MS = 10_000;
 
-// 在席状況とプロフィール一覧をリアルタイム維持するフック。
-// Realtimeイベントは「変更通知」としてのみ使い、payloadは使わず必ず再フェッチする
-// （JOIN済みデータの差分パッチはバグ源になるため。数百人規模なら全件再取得で十分軽い）。
-// フォールバック: 30秒ポーリング + タブ復帰時の即時再フェッチ
-// （モバイルブラウザはバックグラウンドでWebSocketを切るため、後者が実質最重要）。
-export function useOccupancy(initialSessions: ActiveSession[], initialProfiles: ProfileLite[]) {
+// 在席状況とプロフィール一覧をポーリングで最新に保つフック。
+// /api/state を 10秒間隔 + タブ復帰時（visibilitychange）に取得する。
+// 数百人規模ならレスポンスは数KBで、この間隔でも体感はほぼリアルタイム。
+export function useOccupancy(
+  initialSessions: ActiveSession[],
+  initialProfiles: ProfileLite[]
+) {
   const [sessions, setSessions] = useState<ActiveSession[]>(initialSessions);
   const [profiles, setProfiles] = useState<ProfileLite[]>(initialProfiles);
-  const supabaseRef = useRef(createClient());
+  const inFlightRef = useRef(false);
 
   const refetch = useCallback(async () => {
-    const supabase = supabaseRef.current;
-    const [sessionsRes, profilesRes] = await Promise.all([
-      supabase
-        .from("seat_sessions")
-        .select("id, seat_id, user_id, checked_in_at")
-        .is("checked_out_at", null),
-      supabase
-        .from("profiles")
-        .select("id, display_name, department, avatar_url, status"),
-    ]);
-    if (!sessionsRes.error && sessionsRes.data) setSessions(sessionsRes.data);
-    if (!profilesRes.error && profilesRes.data) setProfiles(profilesRes.data);
+    if (inFlightRef.current) return;
+    inFlightRef.current = true;
+    try {
+      const res = await fetch("/api/state", { cache: "no-store" });
+      if (!res.ok) return; // 401等は静かにスキップ（次のナビゲーションでloginへ）
+      const data: { sessions: ActiveSession[]; profiles: ProfileLite[] } =
+        await res.json();
+      setSessions(data.sessions);
+      setProfiles(data.profiles);
+    } catch {
+      // ネットワーク一時障害は次のポーリングに任せる
+    } finally {
+      inFlightRef.current = false;
+    }
   }, []);
 
   useEffect(() => {
-    const supabase = supabaseRef.current;
-
-    const channel = supabase
-      .channel("occupancy")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "seat_sessions" },
-        () => refetch()
-      )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "profiles" },
-        () => refetch()
-      )
-      .subscribe();
-
     const interval = setInterval(refetch, POLL_INTERVAL_MS);
-
     const onVisible = () => {
       if (document.visibilityState === "visible") refetch();
     };
     document.addEventListener("visibilitychange", onVisible);
-
     return () => {
-      supabase.removeChannel(channel);
       clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisible);
     };

@@ -2,18 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { createClient } from "@/lib/supabase/client";
+import {
+  createSeatAction,
+  deleteSeatAction,
+  toggleSeatActiveAction,
+  updateSeatLabelAction,
+  updateSeatPositionAction,
+  type AdminSeat,
+} from "@/app/admin/actions";
 import { checkinUrl } from "@/lib/site-url";
 import type { FloorLite } from "@/lib/map-types";
 
-interface EditorSeat {
-  id: string;
-  floor_id: string;
-  label: string;
-  x: number;
-  y: number;
-  is_active: boolean;
-}
+type EditorSeat = AdminSeat;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
@@ -32,7 +32,6 @@ export default function FloorEditor({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const downPosRef = useRef<{ x: number; y: number } | null>(null);
-  const supabase = createClient();
 
   const relFromPointer = useCallback((clientX: number, clientY: number) => {
     const rect = contentRef.current!.getBoundingClientRect();
@@ -54,11 +53,8 @@ export default function FloorEditor({
     const onUp = async (e: PointerEvent) => {
       const { x, y } = relFromPointer(e.clientX, e.clientY);
       setDragId(null);
-      const { error: err } = await supabase
-        .from("seats")
-        .update({ x: Number(x.toFixed(6)), y: Number(y.toFixed(6)) })
-        .eq("id", dragId);
-      if (err) setError(err.message);
+      const result = await updateSeatPositionAction({ seatId: dragId, x, y });
+      if (!result.ok) setError(result.error);
     };
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp, { once: true });
@@ -66,7 +62,7 @@ export default function FloorEditor({
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
     };
-  }, [dragId, relFromPointer, supabase]);
+  }, [dragId, relFromPointer]);
 
   function nextLabel(): string {
     let n = seats.length + 1;
@@ -82,38 +78,26 @@ export default function FloorEditor({
     if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) return;
 
     const { x, y } = relFromPointer(e.clientX, e.clientY);
-    const label = nextLabel();
-    const { data, error: err } = await supabase
-      .from("seats")
-      .insert({
-        floor_id: floor.id,
-        label,
-        x: Number(x.toFixed(6)),
-        y: Number(y.toFixed(6)),
-      })
-      .select("id, floor_id, label, x, y, is_active")
-      .single();
-    if (err) {
-      setError(err.message);
+    const result = await createSeatAction({
+      floorId: floor.id,
+      label: nextLabel(),
+      x,
+      y,
+    });
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
-    setSeats([...seats, { ...data, x: Number(data.x), y: Number(data.y) }]);
-    setSelectedId(data.id);
+    setSeats([...seats, result.data]);
+    setSelectedId(result.data.id);
   }
 
   async function updateLabel(id: string, label: string) {
     const trimmed = label.trim();
     if (!trimmed) return;
-    const { error: err } = await supabase
-      .from("seats")
-      .update({ label: trimmed })
-      .eq("id", id);
-    if (err) {
-      setError(
-        err.message.includes("duplicate")
-          ? `座席名「${trimmed}」は既に使われています`
-          : err.message
-      );
+    const result = await updateSeatLabelAction({ seatId: id, label: trimmed });
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
     setError(null);
@@ -121,12 +105,12 @@ export default function FloorEditor({
   }
 
   async function toggleActive(seat: EditorSeat) {
-    const { error: err } = await supabase
-      .from("seats")
-      .update({ is_active: !seat.is_active })
-      .eq("id", seat.id);
-    if (err) {
-      setError(err.message);
+    const result = await toggleSeatActiveAction({
+      seatId: seat.id,
+      isActive: !seat.is_active,
+    });
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
     setSeats(
@@ -143,12 +127,9 @@ export default function FloorEditor({
       )
     )
       return;
-    const { error: err } = await supabase
-      .from("seats")
-      .delete()
-      .eq("id", seat.id);
-    if (err) {
-      setError(err.message);
+    const result = await deleteSeatAction(seat.id);
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
     setSeats(seats.filter((s) => s.id !== seat.id));

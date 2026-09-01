@@ -1,6 +1,6 @@
 # freeaddressspot — フリーアドレス座席マップ
 
-フリーアドレスのオフィスで「**今、誰がどこに座っているか**」をオフィス図面上でリアルタイムに可視化するWebアプリです。
+フリーアドレスのオフィスで「**今、誰がどこに座っているか**」をオフィス図面上でビジュアルに可視化するWebアプリです。
 
 各座席に貼った **NFCタグをスマホでタップするだけ** でチェックインできます（専用アプリ不要。iPhone XS以降 / Android対応）。ビーコン方式（BLE）と比べて、ネイティブアプリ開発・ビーコン機器・電池管理が不要で、タグ1枚数十円から導入できます。
 
@@ -8,7 +8,7 @@
 
 | 機能 | 説明 |
 |---|---|
-| 座席マップ | オフィス図面上に在席者を表示。ピンチズーム/パン対応、リアルタイム更新 |
+| 座席マップ | オフィス図面上に在席者を表示。ピンチズーム/パン対応、10秒間隔の自動更新 |
 | チェックイン | 座席のNFCタグをタップ → ブラウザが開く → ワンタップで着席登録。席の移動も自動処理 |
 | 人物検索 | 名前・部署で検索（かな/カナ・全角半角を吸収）→ 該当座席へ自動ズーム |
 | ステータス | 離席中/会議中/在宅勤務/外出中 をワンタップ切替。在宅・外出者は「オフィス外」リストに表示 |
@@ -16,149 +16,128 @@
 | レポート | 日別出社人数・部署別・座席稼働率の集計とCSVダウンロード（管理者のみ） |
 | 自動リセット | 毎朝4時（JST）に全員自動退席（タップ忘れ対策） |
 
-## アーキテクチャ
+## アーキテクチャ（Railway一本化）
 
-- **Next.js 15**（App Router / TypeScript / Tailwind CSS）— Vercelデプロイ想定
-- **Supabase** — Postgres / Google SSO認証 / Realtime / Storage / pg_cron
-- チェックイン等の書き込みは security definer の Postgres関数（RPC）経由。「1人1席・1席1人」は partial unique index でDBレベル保証
+- **Next.js 15**（App Router / TypeScript / Tailwind CSS）を standalone ビルドで Railway にデプロイ
+- **Railway Postgres** — DBはこれ1つ。図面画像もDB内（bytea）に保存するため外部ストレージ不要
+- **認証**: Auth.js (NextAuth v5) の Google プロバイダ + JWTセッション。許可ドメインはサーバ側で強制
+- チェックイン等の書き込みはすべてサーバ側（Server Actions / Route Handlers）。「1人1席・1席1人」は partial unique index + トランザクションでDBレベル保証
 - 座席座標は図面画像に対する相対値（0〜1）で保存するため、どの画面サイズでも正しく表示されます
 
 ```
 NFCタグ（座席ごと）
   └─ https://<アプリURL>/checkin/<座席ID> を書き込み
        └─ スマホでタップ → ブラウザが開く → Googleログイン（初回のみ）→ チェックイン
-            └─ Supabase Realtime → 全員のマップに即時反映
+            └─ 全端末のマップに約10秒以内に反映（ポーリング）
 ```
 
 ## セットアップ
 
-### 1. Supabaseプロジェクト作成
-
-1. [supabase.com](https://supabase.com) でプロジェクトを作成
-2. Project Settings → API から `Project URL` と `anon public` キーを控える
-
-### 2. Google OAuth（Google Workspace SSO）設定
+### 1. Google OAuth クライアントの作成
 
 1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials) で OAuthクライアントID（Webアプリケーション）を作成
-   - 承認済みリダイレクトURI: `https://<プロジェクトref>.supabase.co/auth/v1/callback`
-2. Supabaseダッシュボード → Authentication → Providers → Google を有効化し、クライアントIDとシークレットを設定
-3. ローカル開発する場合は、Supabase → Authentication → URL Configuration の Redirect URLs に `http://localhost:3000/auth/callback` を追加
+2. 承認済みリダイレクトURI に以下を追加:
+   - 本番: `https://<本番ドメイン>/api/auth/callback/google`
+   - ローカル開発（Googleログインを使う場合）: `http://localhost:3000/api/auth/callback/google`
 
-### 3. データベースのセットアップ
+### 2. Railway プロジェクトの作成
 
-[Supabase CLI](https://supabase.com/docs/guides/cli) を使ってマイグレーションを適用します。
+[Railway](https://railway.com) で新規プロジェクトを作り、3つのサービスを構成します。
 
-```bash
-supabase login
-supabase link --project-ref <プロジェクトref>
-supabase db push          # supabase/migrations/ を適用
-```
+**① Postgres**: 「Add Service → Database → PostgreSQL」
 
-> pg_cron 拡張が有効化できない場合は、ダッシュボードの Database → Extensions で `pg_cron` を有効にしてから再実行してください。
+**② web（アプリ本体）**: 「Add Service → GitHub Repo」でこのリポジトリを選択（DockerfileがあるのでDockerビルドされます）
+- Settings → Deploy → **Pre-Deploy Command**: `node scripts/migrate.mjs`（デプロイ前にマイグレーションを適用）
+- Settings → Networking → Generate Domain（またはカスタムドメイン設定）
+- Variables に以下を設定:
 
-**会社ドメインの制限**（重要）: SQL Editor で自社ドメインを設定します。
+| 変数 | 値 |
+|---|---|
+| `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` |
+| `AUTH_SECRET` | `npx auth secret` で生成した値 |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | 手順1のクライアントID/シークレット |
+| `AUTH_TRUST_HOST` | `true`（**必須**。Railwayのプロキシ配下で動くため） |
+| `ALLOWED_EMAIL_DOMAIN` | 会社ドメイン（例: `example.co.jp`）。**未設定だと誰でもログイン可能** |
+| `NEXT_PUBLIC_SITE_URL` | `https://<本番ドメイン>`（ビルド時に焼き込み。変更したら再デプロイ） |
+| `CRON_SECRET` | ランダム文字列（予備リセットAPI用） |
 
-```sql
-update public.app_settings set value = 'your-company.co.jp'
- where key = 'allowed_email_domain';
-```
+**③ cron（深夜リセット）**: 同じリポジトリをもう1サービス追加
+- Variables: `DATABASE_URL` = `${{Postgres.DATABASE_URL}}` のみでOK
+- Settings → Deploy → **Custom Start Command**: `node scripts/nightly-reset.mjs`
+- Settings → **Cron Schedule**: `0 19 * * *`（UTC 19:00 = JST 翌4:00）
+- ドメインは不要（公開しない）
 
-`'*'`（初期値）のままだと任意のGoogleアカウントでログインできてしまいます。
+### 3. 初期データと管理者設定
 
-**サンプルデータ**（任意・動作確認用）: SQL Editor で `supabase/seed.sql` の内容を実行すると、サンプル図面と30席が登録されます。
-
-### 4. アプリの起動（ローカル）
-
-```bash
-cp .env.local.example .env.local   # URL/anonキーを記入
-npm install
-npm run dev
-```
-
-http://localhost:3000 を開き、Googleログインできれば成功です。
-
-### 5. 最初の管理者を設定
-
-自分でログインした後、SQL Editor で:
+デプロイ後、Railwayの Postgres サービス → Data（またはローカルから `railway connect postgres`）でSQLを実行:
 
 ```sql
-update public.profiles set is_admin = true
- where id = (select id from auth.users where email = 'you@your-company.co.jp');
+-- 自分でGoogleログインした後、管理者権限を付与
+update profiles set is_admin = true where email = 'you@example.co.jp';
 ```
 
-マップ右上に「管理」「レポート」リンクが表示されます。
+サンプルフロア（動作確認用）を入れたい場合はローカルから:
 
-### 6. フロアと座席の登録
+```bash
+DATABASE_URL=<RailwayのPublic接続URL> PGSSL=1 npm run db:seed
+```
 
-1. 「管理」→ フロア名とオフィス図面画像（PNG/JPEG/SVG/WebP）をアップロード
+### 4. フロアと座席の登録
+
+1. アプリの「管理」→ フロア名とオフィス図面画像（PNG/JPEG/SVG/WebP、8MBまで）をアップロード
 2. 「座席を配置」→「＋クリックで座席追加」モードで図面上のデスク位置をクリック
 3. マーカーはドラッグで微調整、選択してラベル変更（例: A-1）
 
-### 7. NFCタグの書き込み
+### 5. NFCタグの書き込み
 
 1. **タグの購入**: NTAG213以上（144バイト〜）のNFCタグシールを座席数分（1枚数十円〜）
 2. **URLの取得**: 管理画面の「座席一覧とNFCタグ用URL」から各座席のURLをコピー
-3. **書き込み**: スマホアプリ「[NFC Tools](https://www.wakdev.com/en/apps/nfc-tools.html)」（iOS/Android・無料）で
+3. **書き込み**: スマホアプリ「[NFC Tools](https://www.wakdev.com/en/apps/nfc-tools.html)」(iOS/Android・無料)で
    「書く」→「レコードを追加」→「URL/URI」→ コピーしたURLを貼り付け →「書く」
 4. **ロック**: 書き込み後「その他」→「読み取り専用にする」でいたずら書き換えを防止（元に戻せない点に注意）
 5. タグを座席に貼り、座席ラベルを印字したシールを併貼りすると運用しやすいです
 
 **動作確認**: iPhoneは画面点灯状態でタグに近づけると通知バナー→タップでSafariが開きます。AndroidはNFCをオンにしてタップするとChromeが開きます。初回のみGoogleログインが必要で、以降はタップ→ボタン1回でチェックイン完了です。
 
-### 8. 本番デプロイ
+**注意**: タグにはドメイン入りURLが焼き込まれるため、**独自ドメインを先に決めてから**書き込むのがおすすめです。
 
-Cloudflare Workers と Vercel のどちらにもデプロイできます。いずれの場合も、デプロイ後に:
+## ローカル開発
 
-- Supabase → Authentication → URL Configuration:
-  - Site URL: 本番URL
-  - Redirect URLs: `https://<本番ドメイン>/auth/callback` を追加
-- 本番URLで座席URLを発行してからNFCタグに書き込んでください（タグにはドメインが焼き込まれるため、**独自ドメインを先に決めてから**書き込むのがおすすめです）
-
-#### A. Cloudflare Workers（OpenNextアダプタ）
-
-[@opennextjs/cloudflare](https://opennext.js.org/cloudflare) 設定済み（`wrangler.jsonc` / `open-next.config.ts`）。
+PostgreSQLをローカルに用意し（Docker等）、`.env.example` をコピーして設定します。
 
 ```bash
-npx wrangler login
-npm run cf:deploy        # ビルドしてWorkersへデプロイ
+cp .env.example .env.local
+# DATABASE_URL を自分のPostgresに合わせ、AUTH_SECRET を設定し、
+# ENABLE_DEV_LOGIN=1 のコメントを外す（Googleクレデンシャルなしでログイン可能になる）
+
+npm install
+npm run db:migrate   # マイグレーション適用
+npm run db:seed      # サンプルフロア+30席（任意）
+npm run dev
 ```
 
-- 環境変数（`NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `NEXT_PUBLIC_SITE_URL`）は
-  **ビルド時にインライン化される**ため、ローカルからデプロイする場合は `.env.local` に、
-  [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/)（Gitpush連動）を使う場合は
-  ビルド環境変数として設定します
-- ローカルでWorkersランタイム上の動作確認: `npm run cf:preview`
-- カスタムドメインは Workers → Settings → Domains & Routes から設定
-- 無料枠（10万リクエスト/日）で社内利用には十分です
-
-> 旧方式の Cloudflare Pages + next-on-pages は非推奨です。Workers + OpenNext を使ってください。
-
-#### B. Vercel
-
-1. リポジトリをVercelにインポートし、環境変数を設定:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `NEXT_PUBLIC_SITE_URL`（例: `https://seatmap.your-company.co.jp` — NFCタグ用URLの生成に使用）
-2. そのままデプロイできます（追加設定不要）
+`ENABLE_DEV_LOGIN=1` を設定すると、ログイン画面にメールアドレスだけで入れる開発用フォームが出ます（productionビルドでは環境変数を設定しても常に無効です）。
 
 ## 運用メモ
 
-- **退席**: マップ画面の「退席する」ボタン。押し忘れても毎朝4時（JST）に自動リセットされます
+- **退席**: マップ画面の「退席する」ボタン。押し忘れても毎朝4時（JST）にcronで自動リセット
 - **席の乗っ取り防止**: 他人が着席中の席をタップすると確認画面が出ます。「この席を使う」で前の人を退席扱いにできます（帰宅時のタップ忘れ救済）
 - **座席の削除・移動**: NFCタグにはURL（座席ID）が焼き込まれているため、座席を削除するとそのタグは無効になります。レイアウト変更時は座席を「移動」（ドラッグ）すればタグはそのまま使えます
-- **大型モニタ表示**: PCブラウザで `/map` を開けば入口サイネージとしても使えます（30秒ごとのポーリング＋Realtimeで自動更新）
+- **大型モニタ表示**: PCブラウザで `/map` を開けば入口サイネージとしても使えます（10秒ごとに自動更新）
+- **リセットの予備経路**: `POST /api/cron/reset`（`Authorization: Bearer <CRON_SECRET>`）でも同じリセットを実行できます
 
-## 開発
+## 開発コマンド
 
 ```bash
-npm run dev     # 開発サーバー
-npm run build   # 本番ビルド
-npm run lint    # ESLint
+npm run dev          # 開発サーバー
+npm run build        # 本番ビルド（standalone）
+npm run lint         # ESLint
+npm run db:migrate   # db/migrations/*.sql を適用（適用済み管理付き）
+npm run db:seed      # サンプルデータ投入（冪等）
 ```
 
-- DBスキーマ変更は `supabase/migrations/` にSQLを追加して `supabase db push`
-- 型の再生成: `supabase gen types typescript --linked > lib/database.types.ts`
-- サンプル図面の再生成: `node scripts/gen-sample-floor.mjs`
+- DBスキーマ変更は `db/migrations/` に連番SQLを追加（Railwayでは Pre-Deploy Command が自動適用）
+- サンプル図面の再生成: `node scripts/gen-sample-floor.mjs`（座席座標の定義は `scripts/seed.mjs` と一致させること）
 
 ## ライセンス / 参考
 

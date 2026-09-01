@@ -2,8 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-import type { CheckInResult } from "@/lib/database.types";
+import { requireUser } from "@/lib/auth-helpers";
+import { checkIn, checkOut } from "@/lib/checkin";
 
 // チェックイン実行（/checkin/[seatId] のボタンから呼ばれる。GETでは絶対に実行しない）
 export async function checkInAction(formData: FormData) {
@@ -11,21 +11,9 @@ export async function checkInAction(formData: FormData) {
   const force = formData.get("force") === "1";
   if (!seatId) redirect("/map");
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect(`/login?next=${encodeURIComponent(`/checkin/${seatId}`)}`);
+  const user = await requireUser(`/checkin/${seatId}`);
+  const result = await checkIn(user.id, seatId, force);
 
-  const { data, error } = await supabase.rpc("check_in", {
-    p_seat_id: seatId,
-    p_force: force,
-  });
-  if (error) {
-    redirect(`/checkin/${seatId}?error=${encodeURIComponent(error.message)}`);
-  }
-
-  const result = data as unknown as CheckInResult;
   revalidatePath("/map");
   switch (result.status) {
     case "ok":
@@ -43,13 +31,7 @@ export async function checkInAction(formData: FormData) {
 
 // 退席（マップのステータスバーから）
 export async function checkOutAction() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { error } = await supabase.rpc("check_out");
-  if (error) throw new Error(error.message);
+  const user = await requireUser("/map");
+  await checkOut(user.id);
   revalidatePath("/map");
 }
