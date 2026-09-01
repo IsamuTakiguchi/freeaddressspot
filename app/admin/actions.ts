@@ -177,3 +177,52 @@ export async function deleteSeatAction(seatId: string): Promise<ActionResult> {
   await query("delete from seats where id = $1", [seatId]);
   return { ok: true, data: undefined };
 }
+
+// ---- 個別許可メールアドレス管理 ----
+
+export interface AllowedEmail {
+  email: string;
+  note: string | null;
+  created_at: string;
+}
+
+export async function addAllowedEmailAction(input: {
+  email: string;
+  note?: string;
+}): Promise<ActionResult<AllowedEmail>> {
+  await requireAdmin("/admin");
+  const email = input.email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { ok: false, error: "メールアドレスの形式が正しくありません" };
+  }
+  const note = input.note?.trim() || null;
+  try {
+    const row = await queryOne<{
+      email: string;
+      note: string | null;
+      created_at: Date;
+    }>(
+      `insert into allowed_emails (email, note) values ($1, $2)
+       returning email, note, created_at`,
+      [email, note]
+    );
+    return {
+      ok: true,
+      data: { ...row!, created_at: toIso(row!.created_at)! },
+    };
+  } catch (e) {
+    if ((e as { code?: string }).code === "23505")
+      return { ok: false, error: `${email} は既に登録されています` };
+    throw e;
+  }
+}
+
+export async function removeAllowedEmailAction(
+  email: string
+): Promise<ActionResult> {
+  await requireAdmin("/admin");
+  await query("delete from allowed_emails where email = $1", [
+    email.trim().toLowerCase(),
+  ]);
+  return { ok: true, data: undefined };
+}

@@ -4,7 +4,7 @@ import { devSignInAction, googleSignInAction } from "./actions";
 
 const ERROR_MESSAGES: Record<string, string> = {
   AccessDenied: process.env.ALLOWED_EMAIL_DOMAIN
-    ? `会社のGoogleアカウント（@${process.env.ALLOWED_EMAIL_DOMAIN}）でログインしてください`
+    ? `会社のGoogleアカウント（@${process.env.ALLOWED_EMAIL_DOMAIN}）または管理者に許可されたアカウントでログインしてください`
     : "このアカウントではログインできません",
   Configuration: "認証の設定に問題があります。管理者にお問い合わせください。",
   Verification: "ログインの有効期限が切れました。もう一度お試しください。",
