@@ -12,10 +12,17 @@ const devLoginEnabled =
   process.env.ENABLE_DEV_LOGIN === "1" &&
   process.env.NODE_ENV !== "production";
 
-function domainAllowed(email: string | null | undefined): boolean {
+// ログイン許可判定: 会社ドメイン一致、または管理画面で個別許可されたメールアドレス
+async function emailAllowed(email: string | null | undefined): Promise<boolean> {
   if (!email) return false;
+  const normalized = email.trim().toLowerCase();
   if (!allowedDomain || allowedDomain === "*") return true;
-  return email.toLowerCase().endsWith(`@${allowedDomain.toLowerCase()}`);
+  if (normalized.endsWith(`@${allowedDomain.toLowerCase()}`)) return true;
+  const row = await queryOne<{ email: string }>(
+    "select email from allowed_emails where email = $1",
+    [normalized]
+  );
+  return !!row;
 }
 
 // Google sub（またはdevログインのキー）から profiles を upsert して内部uuidを返す
@@ -54,7 +61,7 @@ const config: NextAuthConfig = {
             credentials: { email: { label: "メールアドレス" } },
             async authorize(credentials) {
               const email = String(credentials?.email ?? "").trim().toLowerCase();
-              if (!email.includes("@") || !domainAllowed(email)) return null;
+              if (!email.includes("@") || !(await emailAllowed(email))) return null;
               return { id: `dev:${email}`, email, name: email.split("@")[0] };
             },
           }),
@@ -66,7 +73,7 @@ const config: NextAuthConfig = {
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "dev-login") return true; // authorizeで検証済み
-      return domainAllowed(user.email);
+      return emailAllowed(user.email);
     },
     async jwt({ token, account, user }) {
       // 初回サインイン時のみ profiles を upsert して内部uuidをJWTへ
