@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" font-family="sans-serif">
+<rect width="1600" height="900" fill="#f8fafc"/>
+<rect x="10" y="10" width="1580" height="880" fill="#ffffff" stroke="#334155" stroke-width="6"/>
+<!-- 会議室 -->
+<rect x="1180" y="330" width="380" height="240" fill="#eff6ff" stroke="#64748b" stroke-width="3"/>
+<text x="1370" y="455" text-anchor="middle" fill="#64748b" font-size="28">会議室 1</text>
+<rect x="1180" y="590" width="380" height="270" fill="#eff6ff" stroke="#64748b" stroke-width="3"/>
+<text x="1370" y="730" text-anchor="middle" fill="#64748b" font-size="28">会議室 2</text>
+<!-- リフレッシュスペース -->
+<rect x="60" y="740" width="340" height="120" rx="12" fill="#f0fdf4" stroke="#86efac" stroke-width="3"/>
+<text x="230" y="808" text-anchor="middle" fill="#16a34a" font-size="24">リフレッシュスペース</text>
+<!-- エントランス -->
+<rect x="700" y="854" width="200" height="12" fill="#94a3b8"/>
+<text x="800" y="845" text-anchor="middle" fill="#64748b" font-size="22">エントランス</text>
+<rect x="200" y="150" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="191" text-anchor="middle" fill="#94a3b8" font-size="20">A-1</text>
+<rect x="330" y="150" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="390" y="191" text-anchor="middle" fill="#94a3b8" font-size="20">A-2</text>
+<rect x="200" y="228" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="269" text-anchor="middle" fill="#94a3b8" font-size="20">A-3</text>
+<rect x="330" y="228" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="390" y="269" text-anchor="middle" fill="#94a3b8" font-size="20">A-4</text>
+<rect x="200" y="306" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="347" text-anchor="middle" fill="#94a3b8" font-size="20">A-5</text>
+<rect x="330" y="306" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="390" y="347" text-anchor="middle" fill="#94a3b8" font-size="20">A-6</text>
+<rect x="200" y="500" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="541" text-anchor="middle" fill="#94a3b8" font-size="20">B-1</text>
+<rect x="330" y="500" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="390" y="541" text-anchor="middle" fill="#94a3b8" font-size="20">B-2</text>
+<rect x="200" y="578" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="619" text-anchor="middle" fill="#94a3b8" font-size="20">B-3</text>
+<rect x="330" y="578" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="390" y="619" text-anchor="middle" fill="#94a3b8" font-size="20">B-4</text>
+<rect x="200" y="656" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="260" y="697" text-anchor="middle" fill="#94a3b8" font-size="20">B-5</text>
+<rect x="330" y="656" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="390" y="697" text-anchor="middle" fill="#94a3b8" font-size="20">B-6</text>
+<rect x="620" y="150" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="680" y="191" text-anchor="middle" fill="#94a3b8" font-size="20">C-1</text>
+<rect x="750" y="150" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="810" y="191" text-anchor="middle" fill="#94a3b8" font-size="20">C-2</text>
+<rect x="620" y="228" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="680" y="269" text-anchor="middle" fill="#94a3b8" font-size="20">C-3</text>
+<rect x="750" y="228" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="810" y="269" text-anchor="middle" fill="#94a3b8" font-size="20">C-4</text>
+<rect x="620" y="306" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="680" y="347" text-anchor="middle" fill="#94a3b8" font-size="20">C-5</text>
+<rect x="750" y="306" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="810" y="347" text-anchor="middle" fill="#94a3b8" font-size="20">C-6</text>
+<rect x="620" y="500" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="680" y="541" text-anchor="middle" fill="#94a3b8" font-size="20">D-1</text>
+<rect x="750" y="500" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="810" y="541" text-anchor="middle" fill="#94a3b8" font-size="20">D-2</text>
+<rect x="620" y="578" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="680" y="619" text-anchor="middle" fill="#94a3b8" font-size="20">D-3</text>
+<rect x="750" y="578" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="810" y="619" text-anchor="middle" fill="#94a3b8" font-size="20">D-4</text>
+<rect x="620" y="656" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="680" y="697" text-anchor="middle" fill="#94a3b8" font-size="20">D-5</text>
+<rect x="750" y="656" width="120" height="68" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="810" y="697" text-anchor="middle" fill="#94a3b8" font-size="20">D-6</text>
+<rect x="1050" y="60" width="80" height="60" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="1090" y="97" text-anchor="middle" fill="#94a3b8" font-size="20">W-1</text>
+<rect x="1140" y="60" width="80" height="60" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="1180" y="97" text-anchor="middle" fill="#94a3b8" font-size="20">W-2</text>
+<rect x="1230" y="60" width="80" height="60" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="1270" y="97" text-anchor="middle" fill="#94a3b8" font-size="20">W-3</text>
+<rect x="1320" y="60" width="80" height="60" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="1360" y="97" text-anchor="middle" fill="#94a3b8" font-size="20">W-4</text>
+<rect x="1410" y="60" width="80" height="60" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="1450" y="97" text-anchor="middle" fill="#94a3b8" font-size="20">W-5</text>
+<rect x="1500" y="60" width="80" height="60" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+<text x="1540" y="97" text-anchor="middle" fill="#94a3b8" font-size="20">W-6</text>
+</svg>

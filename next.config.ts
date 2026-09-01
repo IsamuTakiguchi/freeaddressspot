@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Railwayでは standalone 出力を node で直接起動する（Dockerfile参照）
+  output: "standalone",
+  experimental: {
+    serverActions: {
+      // フロア図面画像のアップロード（server action / FormData）用
+      bodySizeLimit: "10mb",
+    },
+  },
 };
 
 export default nextConfig;
