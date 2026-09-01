@@ -15,6 +15,7 @@ import FloorMap from "@/components/FloorMap";
 import SearchBox, { type SearchEntry } from "@/components/SearchBox";
 import MyStatusBar from "@/components/MyStatusBar";
 import OffsiteList from "@/components/OffsiteList";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function MapView({
   floors,
@@ -125,6 +126,7 @@ export default function MapView({
               </Link>
             </>
           )}
+          <LogoutButton />
         </nav>
       </header>
 
