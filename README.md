@@ -105,16 +105,41 @@ update public.profiles set is_admin = true
 
 **動作確認**: iPhoneは画面点灯状態でタグに近づけると通知バナー→タップでSafariが開きます。AndroidはNFCをオンにしてタップするとChromeが開きます。初回のみGoogleログインが必要で、以降はタップ→ボタン1回でチェックイン完了です。
 
-### 8. 本番デプロイ（Vercel）
+### 8. 本番デプロイ
+
+Cloudflare Workers と Vercel のどちらにもデプロイできます。いずれの場合も、デプロイ後に:
+
+- Supabase → Authentication → URL Configuration:
+  - Site URL: 本番URL
+  - Redirect URLs: `https://<本番ドメイン>/auth/callback` を追加
+- 本番URLで座席URLを発行してからNFCタグに書き込んでください（タグにはドメインが焼き込まれるため、**独自ドメインを先に決めてから**書き込むのがおすすめです）
+
+#### A. Cloudflare Workers（OpenNextアダプタ）
+
+[@opennextjs/cloudflare](https://opennext.js.org/cloudflare) 設定済み（`wrangler.jsonc` / `open-next.config.ts`）。
+
+```bash
+npx wrangler login
+npm run cf:deploy        # ビルドしてWorkersへデプロイ
+```
+
+- 環境変数（`NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `NEXT_PUBLIC_SITE_URL`）は
+  **ビルド時にインライン化される**ため、ローカルからデプロイする場合は `.env.local` に、
+  [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/)（Gitpush連動）を使う場合は
+  ビルド環境変数として設定します
+- ローカルでWorkersランタイム上の動作確認: `npm run cf:preview`
+- カスタムドメインは Workers → Settings → Domains & Routes から設定
+- 無料枠（10万リクエスト/日）で社内利用には十分です
+
+> 旧方式の Cloudflare Pages + next-on-pages は非推奨です。Workers + OpenNext を使ってください。
+
+#### B. Vercel
 
 1. リポジトリをVercelにインポートし、環境変数を設定:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `NEXT_PUBLIC_SITE_URL`（例: `https://seatmap.your-company.co.jp` — NFCタグ用URLの生成に使用）
-2. Supabase → Authentication → URL Configuration:
-   - Site URL: 本番URL
-   - Redirect URLs: `https://<本番ドメイン>/auth/callback` を追加
-3. デプロイ後、本番URLで座席URLを発行してからNFCタグに書き込んでください（タグにはドメインが焼き込まれるため、**独自ドメインを先に決めてから**書き込むのがおすすめです）
+2. そのままデプロイできます（追加設定不要）
 
 ## 運用メモ
 
