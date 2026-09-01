@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LogoutButton from "@/components/LogoutButton";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { query, toIso } from "@/lib/db";
 import { listFloors } from "@/lib/queries";
@@ -20,9 +21,12 @@ export default async function AdminPage() {
     <main className="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
       <header className="flex items-center justify-between">
         <h1 className="text-lg font-bold text-gray-900">管理</h1>
-        <Link href="/map" className="text-sm text-blue-700 hover:underline">
-          ← 座席マップ
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/map" className="text-sm text-blue-700 hover:underline">
+            ← 座席マップ
+          </Link>
+          <LogoutButton />
+        </div>
       </header>
 
       <section>

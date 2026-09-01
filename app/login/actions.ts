@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 
 function safeNext(next: unknown): string {
   const n = String(next ?? "/map");
@@ -17,4 +17,8 @@ export async function devSignInAction(formData: FormData) {
     email: String(formData.get("email") ?? ""),
     redirectTo: safeNext(formData.get("next")),
   });
+}
+
+export async function signOutAction() {
+  await signOut({ redirectTo: "/login" });
 }
