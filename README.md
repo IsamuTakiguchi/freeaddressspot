@@ -42,7 +42,7 @@ NFCタグ（座席ごと）
 
 ### 2. Railway プロジェクトの作成
 
-[Railway](https://railway.com) で新規プロジェクトを作り、3つのサービスを構成します。
+[Railway](https://railway.com) で新規プロジェクトを作り、2つのサービスを構成します。
 
 **① Postgres**: 「Add Service → Database → PostgreSQL」
 
