@@ -8,8 +8,8 @@ export default function OffsiteList({ profiles }: { profiles: ProfileLite[] }) {
   if (profiles.length === 0) return null;
 
   return (
-    <details className="rounded-lg border border-gray-200 bg-white p-3">
-      <summary className="cursor-pointer text-sm font-medium text-gray-700">
+    <details className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-900/5">
+      <summary className="cursor-pointer text-sm font-bold text-gray-800">
         オフィス外（在宅・外出） {profiles.length}名
       </summary>
       <ul className="mt-2 flex flex-wrap gap-2">

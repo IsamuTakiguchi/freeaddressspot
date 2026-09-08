@@ -65,9 +65,9 @@ export default function SeatMarker({
       {occupant ? (
         <>
           <span
-            className={`relative flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white shadow-md ${colorFor(occupant.profile.id)} ${
-              isMe ? "ring-2 ring-blue-600 ring-offset-1" : ""
-            } ${highlighted ? "ring-2 ring-red-500 ring-offset-1" : ""}`}
+            className={`relative flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[11px] font-bold text-white shadow-md ${colorFor(occupant.profile.id)} ${
+              isMe ? "ring-2 ring-blue-600" : ""
+            } ${highlighted ? "ring-2 ring-red-500" : ""}`}
           >
             {occupant.profile.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -86,7 +86,7 @@ export default function SeatMarker({
               />
             )}
           </span>
-          <span className="mt-0.5 max-w-24 truncate rounded bg-white/90 px-1 text-[10px] leading-tight text-gray-800 shadow-sm">
+          <span className="mt-0.5 max-w-24 truncate rounded-full bg-white/95 px-1.5 py-px text-[10px] font-medium leading-tight text-gray-800 shadow-sm ring-1 ring-gray-900/10">
             {occupant.profile.display_name}
           </span>
         </>

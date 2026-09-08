@@ -16,6 +16,7 @@ import SearchBox, { type SearchEntry } from "@/components/SearchBox";
 import MyStatusBar from "@/components/MyStatusBar";
 import OffsiteList from "@/components/OffsiteList";
 import LogoutButton from "@/components/LogoutButton";
+import { LogoType } from "@/components/Logo";
 
 export default function MapView({
   floors,
@@ -113,31 +114,42 @@ export default function MapView({
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-6xl flex-col gap-3 p-3 sm:p-4">
-      <header className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-lg font-bold text-gray-900">座席マップ</h1>
-        <nav className="flex items-center gap-3 text-sm text-blue-700">
+      <header className="flex flex-wrap items-center justify-between gap-2 px-1 pt-1">
+        <h1>
+          <LogoType />
+        </h1>
+        <nav className="flex items-center gap-1.5 text-sm">
           {isAdmin && (
             <>
-              <Link href="/admin" className="hover:underline">
+              <Link
+                href="/admin"
+                className="rounded-full px-3 py-1.5 font-medium text-gray-600 hover:bg-white hover:text-blue-700 hover:shadow-sm"
+              >
                 管理
               </Link>
-              <Link href="/reports" className="hover:underline">
+              <Link
+                href="/reports"
+                className="rounded-full px-3 py-1.5 font-medium text-gray-600 hover:bg-white hover:text-blue-700 hover:shadow-sm"
+              >
                 レポート
               </Link>
             </>
           )}
-          <LogoutButton />
+          <span className="px-1.5">
+            <LogoutButton />
+          </span>
         </nav>
       </header>
 
-      {me && (
-        <MyStatusBar me={me} mySeatLabel={mySeatLabel} onChanged={refetch} />
-      )}
-
-      <SearchBox entries={searchEntries} onSelect={onSearchSelect} />
+      <div className="space-y-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-900/5">
+        {me && (
+          <MyStatusBar me={me} mySeatLabel={mySeatLabel} onChanged={refetch} />
+        )}
+        <SearchBox entries={searchEntries} onSelect={onSearchSelect} />
+      </div>
 
       {floors.length > 1 && (
-        <div className="flex gap-1 overflow-x-auto">
+        <div className="flex gap-1 overflow-x-auto rounded-xl bg-gray-200/70 p-1">
           {floors.map((f) => (
             <button
               key={f.id}
@@ -146,10 +158,10 @@ export default function MapView({
                 setHighlightSeatId(null);
                 setSelectedSeat(null);
               }}
-              className={`shrink-0 rounded-t-lg px-4 py-2 text-sm font-medium ${
+              className={`min-h-10 shrink-0 flex-1 rounded-lg px-4 text-sm font-medium transition-colors ${
                 f.id === floorId
-                  ? "bg-white text-blue-700 shadow"
-                  : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                  ? "bg-white text-blue-700 shadow-sm"
+                  : "text-gray-600 active:bg-white/60"
               }`}
             >
               {f.name}
@@ -158,7 +170,7 @@ export default function MapView({
         </div>
       )}
 
-      <div className="relative h-[62vh] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm sm:h-[68vh]">
+      <div className="relative h-[62vh] overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5 sm:h-[68vh]">
         {currentFloor ? (
           <FloorMap
             floor={currentFloor}
@@ -178,7 +190,7 @@ export default function MapView({
         )}
 
         {selectedSeat && (
-          <div className="absolute inset-x-2 bottom-2 z-20 flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white/95 p-3 text-sm shadow-lg">
+          <div className="absolute inset-x-2 bottom-2 z-20 flex items-center justify-between gap-2 rounded-xl bg-white/95 p-3 text-sm shadow-lg ring-1 ring-gray-900/10 backdrop-blur">
             <div className="min-w-0">
               <span className="font-bold text-gray-900">
                 {selectedSeat.label}
@@ -223,7 +235,7 @@ export default function MapView({
 
       <OffsiteList profiles={offsiteProfiles} />
 
-      <p className="text-center text-xs text-gray-400">
+      <p className="pb-2 text-center text-xs text-gray-400">
         座席のNFCタグをスマホでタップするとチェックインできます
       </p>
     </div>
