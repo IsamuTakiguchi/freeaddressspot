@@ -29,45 +29,49 @@ export default function MyStatusBar({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 text-sm">
-      <button
-        onClick={() => setEditOpen((v) => !v)}
-        className="font-medium text-gray-900 underline decoration-dotted underline-offset-2"
-        title="表示名・部署を編集"
-      >
-        {me.display_name}
-      </button>
-      {mySeatLabel ? (
-        <>
-          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
+    <div className="space-y-2">
+      {/* 自分の名前・在席状況・退席ボタン */}
+      <div className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-2">
+        <button
+          onClick={() => setEditOpen((v) => !v)}
+          className="py-2 text-sm font-medium text-gray-900 underline decoration-dotted underline-offset-2"
+          title="表示名・部署を編集"
+        >
+          {me.display_name}
+        </button>
+        {mySeatLabel ? (
+          <span className="rounded-full bg-emerald-100 px-3 py-1.5 text-sm font-medium text-emerald-800">
             {mySeatLabel} に着席中
           </span>
+        ) : me.status ? (
+          <span className="rounded-full bg-sky-100 px-3 py-1.5 text-sm font-medium text-sky-800">
+            {STATUS_LABELS[me.status]}
+          </span>
+        ) : (
+          <span className="text-sm text-gray-400">未着席</span>
+        )}
+        {mySeatLabel && (
           <button
             onClick={() => run(checkOutAction)}
             disabled={pending}
-            className="rounded-lg border border-gray-300 bg-white px-2.5 py-1 text-xs hover:bg-gray-50 disabled:opacity-50"
+            className="ml-auto min-h-11 rounded-xl border border-gray-300 bg-white px-5 text-sm font-bold text-gray-700 shadow-sm active:bg-gray-100 disabled:opacity-50"
           >
             退席する
           </button>
-        </>
-      ) : me.status ? (
-        <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800">
-          {STATUS_LABELS[me.status]}
-        </span>
-      ) : (
-        <span className="text-xs text-gray-400">未着席</span>
-      )}
+        )}
+      </div>
 
-      <div className="flex items-center gap-1">
+      {/* ステータス切替（4等分・タップしやすい高さ） */}
+      <div className="grid grid-cols-4 gap-1.5">
         {STATUS_OPTIONS.map((s) => (
           <button
             key={s}
             onClick={() => run(() => setStatusAction(me.status === s ? null : s))}
             disabled={pending}
-            className={`rounded-full border px-2 py-0.5 text-xs disabled:opacity-50 ${
+            className={`min-h-11 rounded-xl border px-1 text-sm font-medium disabled:opacity-50 ${
               me.status === s
-                ? "border-blue-500 bg-blue-500 text-white"
-                : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                : "border-gray-300 bg-white text-gray-700 active:bg-gray-100"
             }`}
           >
             {STATUS_LABELS[s]}
@@ -81,24 +85,24 @@ export default function MyStatusBar({
             setEditOpen(false);
             run(() => updateProfileAction(fd));
           }}
-          className="flex w-full flex-wrap items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2"
+          className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3"
         >
           <input
             name="display_name"
             defaultValue={me.display_name}
             placeholder="表示名"
             required
-            className="rounded border border-gray-300 px-2 py-1 text-sm"
+            className="min-h-11 min-w-36 flex-1 rounded-lg border border-gray-300 px-3 text-sm"
           />
           <input
             name="department"
             defaultValue={me.department ?? ""}
             placeholder="部署（検索に使われます）"
-            className="rounded border border-gray-300 px-2 py-1 text-sm"
+            className="min-h-11 min-w-36 flex-1 rounded-lg border border-gray-300 px-3 text-sm"
           />
           <button
             type="submit"
-            className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
+            className="min-h-11 rounded-lg bg-blue-600 px-5 text-sm font-bold text-white active:bg-blue-700"
           >
             保存
           </button>
