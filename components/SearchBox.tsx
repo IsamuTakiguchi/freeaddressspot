@@ -47,10 +47,10 @@ export default function SearchBox({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="名前・部署で検索"
-        className="min-h-11 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-3 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        className="min-h-11 w-full rounded-xl border-0 bg-black/5 pl-10 pr-3 text-sm transition-colors placeholder:text-gray-400 focus:bg-white focus:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600/40"
       />
       {hits.length > 0 && (
-        <ul className="absolute z-30 mt-1.5 max-h-72 w-full overflow-auto rounded-xl bg-white shadow-lg ring-1 ring-gray-900/10">
+        <ul className="absolute z-30 mt-1.5 max-h-72 w-full overflow-auto rounded-2xl border border-black/5 bg-white shadow-xl">
           {hits.map((e) => (
             <li key={e.profile.id}>
               <button
