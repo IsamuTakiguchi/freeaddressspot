@@ -54,7 +54,7 @@ export default function MyStatusBar({
           <button
             onClick={() => run(checkOutAction)}
             disabled={pending}
-            className="ml-auto min-h-11 rounded-xl border border-gray-300 bg-white px-5 text-sm font-bold text-gray-700 shadow-sm active:bg-gray-100 disabled:opacity-50"
+            className="ml-auto min-h-11 rounded-full bg-black/5 px-6 text-sm font-semibold text-blue-600 transition-colors active:bg-black/10 disabled:opacity-50"
           >
             退席する
           </button>
@@ -68,10 +68,10 @@ export default function MyStatusBar({
             key={s}
             onClick={() => run(() => setStatusAction(me.status === s ? null : s))}
             disabled={pending}
-            className={`min-h-11 rounded-xl border px-1 text-sm font-medium disabled:opacity-50 ${
+            className={`min-h-11 rounded-full px-1 text-sm font-medium transition-colors disabled:opacity-50 ${
               me.status === s
-                ? "border-blue-600 bg-blue-600 text-white shadow-sm"
-                : "border-gray-300 bg-white text-gray-700 active:bg-gray-100"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "bg-black/5 text-gray-700 active:bg-black/10"
             }`}
           >
             {STATUS_LABELS[s]}
@@ -85,24 +85,24 @@ export default function MyStatusBar({
             setEditOpen(false);
             run(() => updateProfileAction(fd));
           }}
-          className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3"
+          className="flex flex-wrap items-center gap-2 rounded-2xl bg-black/5 p-3"
         >
           <input
             name="display_name"
             defaultValue={me.display_name}
             placeholder="表示名"
             required
-            className="min-h-11 min-w-36 flex-1 rounded-lg border border-gray-300 px-3 text-sm"
+            className="min-h-11 min-w-36 flex-1 rounded-xl border-0 bg-white px-3.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600/40"
           />
           <input
             name="department"
             defaultValue={me.department ?? ""}
             placeholder="部署（検索に使われます）"
-            className="min-h-11 min-w-36 flex-1 rounded-lg border border-gray-300 px-3 text-sm"
+            className="min-h-11 min-w-36 flex-1 rounded-xl border-0 bg-white px-3.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600/40"
           />
           <button
             type="submit"
-            className="min-h-11 rounded-lg bg-blue-600 px-5 text-sm font-bold text-white active:bg-blue-700"
+            className="min-h-11 rounded-full bg-blue-600 px-6 text-sm font-semibold text-white active:bg-blue-700"
           >
             保存
           </button>

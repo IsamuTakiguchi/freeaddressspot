@@ -103,7 +103,7 @@ export default async function CheckinPage({
           <form action={checkInAction} className="mt-4">
             <input type="hidden" name="seat_id" value={seat.id} />
             <input type="hidden" name="force" value="1" />
-            <button className="w-full rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 hover:bg-amber-100">
+            <button className="w-full rounded-full bg-amber-100 px-4 py-3.5 text-sm font-semibold text-amber-900 transition-colors active:bg-amber-200">
               この席を使う
               <span className="block text-xs font-normal">
                 （{occupantName} さんを退席扱いにします）
@@ -116,7 +116,7 @@ export default async function CheckinPage({
         <>
           <form action={checkInAction} className="mt-6">
             <input type="hidden" name="seat_id" value={seat.id} />
-            <button className="min-h-13 w-full rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-4 text-base font-bold text-white shadow-md shadow-blue-600/30 active:from-blue-600 active:to-blue-700">
+            <button className="min-h-13 w-full rounded-full bg-blue-600 px-4 text-base font-semibold text-white shadow-sm transition-colors active:bg-blue-700">
               {mySeatLabel
                 ? `${mySeatLabel} から移動してチェックイン`
                 : "この席にチェックイン"}
@@ -131,8 +131,8 @@ export default async function CheckinPage({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-gradient-to-b from-blue-50 via-[#f4f6f9] to-[#f4f6f9] px-4">
-      <div className="w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-xl shadow-blue-900/5 ring-1 ring-gray-900/5">
+    <main className="flex min-h-dvh items-center justify-center bg-[#f5f5f7] px-4">
+      <div className="w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_rgba(0,0,0,0.06)]">
         <div className="mb-4 flex justify-center">
           <LogoMark size={40} />
         </div>
@@ -156,8 +156,8 @@ function MapLink({ primary }: { primary?: boolean }) {
       href="/map"
       className={
         primary
-          ? "mt-6 block min-h-13 w-full rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-4 py-3.5 text-base font-bold text-white shadow-md shadow-blue-600/30 active:from-blue-600 active:to-blue-700"
-          : "mt-4 block py-2 text-sm font-medium text-blue-700 hover:underline"
+          ? "mt-6 block min-h-13 w-full rounded-full bg-blue-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm transition-colors active:bg-blue-700"
+          : "mt-4 block py-2 text-sm font-medium text-blue-600 active:opacity-60"
       }
     >
       座席マップを見る

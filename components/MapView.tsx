@@ -113,35 +113,38 @@ export default function MapView({
     : null;
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-6xl flex-col gap-3 p-3 sm:p-4">
-      <header className="flex flex-wrap items-center justify-between gap-2 px-1 pt-1">
-        <h1>
-          <LogoType />
-        </h1>
-        <nav className="flex items-center gap-1.5 text-sm">
-          {isAdmin && (
-            <>
-              <Link
-                href="/admin"
-                className="rounded-full px-3 py-1.5 font-medium text-gray-600 hover:bg-white hover:text-blue-700 hover:shadow-sm"
-              >
-                管理
-              </Link>
-              <Link
-                href="/reports"
-                className="rounded-full px-3 py-1.5 font-medium text-gray-600 hover:bg-white hover:text-blue-700 hover:shadow-sm"
-              >
-                レポート
-              </Link>
-            </>
-          )}
-          <span className="px-1.5">
-            <LogoutButton />
-          </span>
-        </nav>
+    <div className="min-h-dvh">
+      <header className="sticky top-0 z-40 border-b border-black/5 bg-[#f5f5f7]/75 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2.5">
+          <h1>
+            <LogoType />
+          </h1>
+          <nav className="flex items-center gap-1 text-sm">
+            {isAdmin && (
+              <>
+                <Link
+                  href="/admin"
+                  className="rounded-full px-3 py-1.5 font-medium text-blue-600 active:opacity-60"
+                >
+                  管理
+                </Link>
+                <Link
+                  href="/reports"
+                  className="rounded-full px-3 py-1.5 font-medium text-blue-600 active:opacity-60"
+                >
+                  レポート
+                </Link>
+              </>
+            )}
+            <span className="px-1.5">
+              <LogoutButton />
+            </span>
+          </nav>
+        </div>
       </header>
 
-      <div className="space-y-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-900/5">
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 p-3 sm:p-4">
+      <div className="space-y-3 rounded-2xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)]">
         {me && (
           <MyStatusBar me={me} mySeatLabel={mySeatLabel} onChanged={refetch} />
         )}
@@ -149,7 +152,7 @@ export default function MapView({
       </div>
 
       {floors.length > 1 && (
-        <div className="flex gap-1 overflow-x-auto rounded-xl bg-gray-200/70 p-1">
+        <div className="flex gap-1 overflow-x-auto rounded-xl bg-black/5 p-1">
           {floors.map((f) => (
             <button
               key={f.id}
@@ -160,8 +163,8 @@ export default function MapView({
               }}
               className={`min-h-10 shrink-0 flex-1 rounded-lg px-4 text-sm font-medium transition-colors ${
                 f.id === floorId
-                  ? "bg-white text-blue-700 shadow-sm"
-                  : "text-gray-600 active:bg-white/60"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-500 active:bg-white/60"
               }`}
             >
               {f.name}
@@ -170,7 +173,7 @@ export default function MapView({
         </div>
       )}
 
-      <div className="relative h-[62vh] overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-900/5 sm:h-[68vh]">
+      <div className="relative h-[62vh] overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] sm:h-[68vh]">
         {currentFloor ? (
           <FloorMap
             floor={currentFloor}
@@ -190,7 +193,7 @@ export default function MapView({
         )}
 
         {selectedSeat && (
-          <div className="absolute inset-x-2 bottom-2 z-20 flex items-center justify-between gap-2 rounded-xl bg-white/95 p-3 text-sm shadow-lg ring-1 ring-gray-900/10 backdrop-blur">
+          <div className="absolute inset-x-2 bottom-2 z-20 flex items-center justify-between gap-2 rounded-2xl border border-black/5 bg-white/85 p-3.5 text-sm shadow-lg backdrop-blur-xl">
             <div className="min-w-0">
               <span className="font-bold text-gray-900">
                 {selectedSeat.label}
@@ -238,6 +241,7 @@ export default function MapView({
       <p className="pb-2 text-center text-xs text-gray-400">
         座席のNFCタグをスマホでタップするとチェックインできます
       </p>
+      </div>
     </div>
   );
 }

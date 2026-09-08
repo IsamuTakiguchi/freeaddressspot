@@ -1,17 +1,27 @@
 @import "tailwindcss";
 
 @theme {
+  /* Apple製品のネイティブフォント（iPhone/MacではSF Pro + ヒラギノ） */
   --font-sans:
-    var(--font-noto-sans-jp), "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    Meiryo, system-ui, sans-serif;
+    -apple-system, BlinkMacSystemFont, "SF Pro JP", "SF Pro Display",
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo,
+    system-ui, sans-serif;
+
+  /* アクセントをiOSシステムブルーに（既存のblueクラスを一括で置き換え） */
+  --color-blue-50: #f0f7ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-500: #1a8cff;
+  --color-blue-600: #007aff;
+  --color-blue-700: #0062cc;
 }
 
 body {
-  background: #f4f6f9;
-  color: #1b2430;
+  background: #f5f5f7; /* Appleの定番グレー */
+  color: #1d1d1f;
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #bfd3fb;
+  background: #b3d7ff;
 }

@@ -31,12 +31,12 @@ export default async function LoginPage({
     process.env.NODE_ENV !== "production";
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-gradient-to-b from-blue-50 via-[#f4f6f9] to-[#f4f6f9] px-4">
-      <div className="w-full max-w-sm rounded-3xl bg-white p-8 shadow-xl shadow-blue-900/5 ring-1 ring-gray-900/5">
+    <main className="flex min-h-dvh items-center justify-center bg-[#f5f5f7] px-4">
+      <div className="w-full max-w-sm rounded-3xl bg-white p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_rgba(0,0,0,0.06)]">
         <div className="flex justify-center">
           <LogoMark size={56} />
         </div>
-        <h1 className="mt-4 text-center text-xl font-bold tracking-tight text-gray-900">
+        <h1 className="mt-5 text-center text-2xl font-semibold tracking-tight text-[#1d1d1f]">
           座席マップ
         </h1>
         <p className="mt-2 text-center text-sm leading-relaxed text-gray-500">
@@ -53,7 +53,7 @@ export default async function LoginPage({
           <input type="hidden" name="next" value={next} />
           <button
             type="submit"
-            className="flex min-h-12 w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 text-sm font-bold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 active:bg-gray-100"
+            className="flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-black/5 px-4 text-sm font-semibold text-[#1d1d1f] transition-colors hover:bg-black/[0.08] active:bg-black/10"
           >
             <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden>
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
