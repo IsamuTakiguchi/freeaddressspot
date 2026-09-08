@@ -40,6 +40,7 @@ export default function FloorMap({
       ref={wrapperRef}
       minScale={1}
       maxScale={6}
+      centerOnInit
       doubleClick={{ mode: "zoomIn" }}
       wheel={{ step: 0.15 }}
     >

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/Logo";
 import { requireUser } from "@/lib/auth-helpers";
 import {
   getFloorName,
@@ -115,7 +116,7 @@ export default async function CheckinPage({
         <>
           <form action={checkInAction} className="mt-6">
             <input type="hidden" name="seat_id" value={seat.id} />
-            <button className="w-full rounded-lg bg-blue-600 px-4 py-3 text-base font-bold text-white shadow hover:bg-blue-700">
+            <button className="min-h-13 w-full rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-4 text-base font-bold text-white shadow-md shadow-blue-600/30 active:from-blue-600 active:to-blue-700">
               {mySeatLabel
                 ? `${mySeatLabel} から移動してチェックイン`
                 : "この席にチェックイン"}
@@ -130,8 +131,11 @@ export default async function CheckinPage({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 text-center shadow">
+    <main className="flex min-h-dvh items-center justify-center bg-gradient-to-b from-blue-50 via-[#f4f6f9] to-[#f4f6f9] px-4">
+      <div className="w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-xl shadow-blue-900/5 ring-1 ring-gray-900/5">
+        <div className="mb-4 flex justify-center">
+          <LogoMark size={40} />
+        </div>
         {children}
       </div>
     </main>
@@ -152,8 +156,8 @@ function MapLink({ primary }: { primary?: boolean }) {
       href="/map"
       className={
         primary
-          ? "mt-6 block w-full rounded-lg bg-blue-600 px-4 py-3 text-base font-bold text-white shadow hover:bg-blue-700"
-          : "mt-4 block text-sm text-blue-700 hover:underline"
+          ? "mt-6 block min-h-13 w-full rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-4 py-3.5 text-base font-bold text-white shadow-md shadow-blue-600/30 active:from-blue-600 active:to-blue-700"
+          : "mt-4 block py-2 text-sm font-medium text-blue-700 hover:underline"
       }
     >
       座席マップを見る

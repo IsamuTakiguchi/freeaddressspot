@@ -31,15 +31,26 @@ export default function SearchBox({
 
   return (
     <div className="relative">
+      <svg
+        viewBox="0 0 24 24"
+        className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
       <input
         type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="名前・部署で検索"
-        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none"
+        className="min-h-11 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-3 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
       />
       {hits.length > 0 && (
-        <ul className="absolute z-30 mt-1 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+        <ul className="absolute z-30 mt-1.5 max-h-72 w-full overflow-auto rounded-xl bg-white shadow-lg ring-1 ring-gray-900/10">
           {hits.map((e) => (
             <li key={e.profile.id}>
               <button
@@ -47,7 +58,7 @@ export default function SearchBox({
                   onSelect(e);
                   setQuery("");
                 }}
-                className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-blue-50"
+                className="flex min-h-11 w-full items-center justify-between gap-2 px-3.5 text-left text-sm hover:bg-blue-50 active:bg-blue-50"
               >
                 <span className="min-w-0">
                   <span className="font-medium text-gray-900">
@@ -78,7 +89,7 @@ export default function SearchBox({
         </ul>
       )}
       {query.trim() && hits.length === 0 && (
-        <div className="absolute z-30 mt-1 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500 shadow-lg">
+        <div className="absolute z-30 mt-1.5 w-full rounded-xl bg-white px-3.5 py-3 text-sm text-gray-500 shadow-lg ring-1 ring-gray-900/10">
           該当する人が見つかりません
         </div>
       )}
