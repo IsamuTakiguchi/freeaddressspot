@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useOccupancy } from "@/hooks/useOccupancy";
 import type {
@@ -12,7 +12,6 @@ import type {
 } from "@/lib/map-types";
 import { OFFSITE_STATUSES, STATUS_LABELS } from "@/lib/status";
 import FloorMap from "@/components/FloorMap";
-import SearchBox, { type SearchEntry } from "@/components/SearchBox";
 import MyStatusBar from "@/components/MyStatusBar";
 import OffsiteList from "@/components/OffsiteList";
 import LogoutButton from "@/components/LogoutButton";
@@ -70,23 +69,6 @@ export default function MapView({
     ? `${floorById.get(mySeat.floor_id)?.name ?? ""} ${mySeat.label}`.trim()
     : null;
 
-  // 検索候補（全プロフィール + 着席していれば座席情報）
-  const searchEntries: SearchEntry[] = useMemo(() => {
-    const seatByUser = new Map<string, SeatLite>();
-    for (const session of sessions) {
-      const seat = seatById.get(session.seat_id);
-      if (seat) seatByUser.set(session.user_id, seat);
-    }
-    return profiles.map((profile) => {
-      const seat = seatByUser.get(profile.id) ?? null;
-      return {
-        profile,
-        seat,
-        floorName: seat ? floorById.get(seat.floor_id)?.name ?? null : null,
-      };
-    });
-  }, [profiles, sessions, seatById, floorById]);
-
   const offsiteProfiles = useMemo(() => {
     const seatedIds = new Set(sessions.map((s) => s.user_id));
     return profiles.filter(
@@ -94,14 +76,6 @@ export default function MapView({
         !seatedIds.has(p.id) && p.status && OFFSITE_STATUSES.includes(p.status)
     );
   }, [profiles, sessions]);
-
-  const onSearchSelect = useCallback((entry: SearchEntry) => {
-    if (entry.seat) {
-      setFloorId(entry.seat.floor_id);
-      setHighlightSeatId(entry.seat.id);
-      setSelectedSeat(entry.seat);
-    }
-  }, []);
 
   const currentFloor = floorId ? floorById.get(floorId) ?? null : null;
   const currentSeats = useMemo(
@@ -144,12 +118,11 @@ export default function MapView({
       </header>
 
       <div className="mx-auto flex max-w-6xl flex-col gap-3 p-3 sm:p-4">
-      <div className="anim-rise space-y-3 rounded-2xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] dark:bg-[#1c1c1e]">
-        {me && (
+      {me && (
+        <div className="anim-rise rounded-2xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] dark:bg-[#1c1c1e]">
           <MyStatusBar me={me} mySeatLabel={mySeatLabel} onChanged={refetch} />
-        )}
-        <SearchBox entries={searchEntries} onSelect={onSearchSelect} />
-      </div>
+        </div>
+      )}
 
       {floors.length > 1 && (
         <div className="flex gap-1 overflow-x-auto rounded-xl bg-black/5 p-1 dark:bg-white/10">
@@ -173,7 +146,7 @@ export default function MapView({
         </div>
       )}
 
-      <div className="anim-rise-2 relative h-[calc(100dvh-18.5rem)] min-h-72 overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] dark:bg-[#1c1c1e]">
+      <div className="anim-rise-2 relative h-[calc(100dvh-14.5rem)] min-h-72 overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] dark:bg-[#1c1c1e]">
         {currentFloor ? (
           <FloorMap
             floor={currentFloor}
