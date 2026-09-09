@@ -47,10 +47,10 @@ export default function SearchBox({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="名前・部署で検索"
-        className="min-h-11 w-full rounded-xl border-0 bg-black/5 pl-10 pr-3 text-sm transition-colors placeholder:text-gray-400 focus:bg-white focus:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600/40"
+        className="min-h-11 w-full rounded-xl border-0 bg-black/5 pl-10 pr-3 text-sm transition-colors placeholder:text-gray-400 focus:bg-white focus:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600/40 dark:bg-white/10 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:bg-[#2c2c2e]"
       />
       {hits.length > 0 && (
-        <ul className="absolute z-30 mt-1.5 max-h-72 w-full overflow-auto rounded-2xl border border-black/5 bg-white shadow-xl">
+        <ul className="anim-drop absolute z-30 mt-1.5 max-h-72 w-full overflow-auto rounded-2xl border border-black/5 bg-white shadow-xl dark:border-white/10 dark:bg-[#1c1c1e]">
           {hits.map((e) => (
             <li key={e.profile.id}>
               <button
@@ -58,14 +58,14 @@ export default function SearchBox({
                   onSelect(e);
                   setQuery("");
                 }}
-                className="flex min-h-11 w-full items-center justify-between gap-2 px-3.5 text-left text-sm hover:bg-blue-50 active:bg-blue-50"
+                className="flex min-h-11 w-full items-center justify-between gap-2 px-3.5 text-left text-sm hover:bg-blue-50 active:bg-blue-50 dark:hover:bg-white/10 dark:active:bg-white/10"
               >
                 <span className="min-w-0">
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     {e.profile.display_name}
                   </span>
                   {e.profile.department && (
-                    <span className="ml-1 text-xs text-gray-500">
+                    <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
                       {e.profile.department}
                     </span>
                   )}
@@ -80,7 +80,7 @@ export default function SearchBox({
                       {STATUS_LABELS[e.profile.status]}
                     </span>
                   ) : (
-                    <span className="text-gray-400">不在</span>
+                    <span className="text-gray-400 dark:text-gray-500">不在</span>
                   )}
                 </span>
               </button>
@@ -89,7 +89,7 @@ export default function SearchBox({
         </ul>
       )}
       {query.trim() && hits.length === 0 && (
-        <div className="absolute z-30 mt-1.5 w-full rounded-xl bg-white px-3.5 py-3 text-sm text-gray-500 shadow-lg ring-1 ring-gray-900/10">
+        <div className="anim-drop absolute z-30 mt-1.5 w-full rounded-2xl border border-black/5 bg-white px-3.5 py-3 text-sm text-gray-500 shadow-xl dark:border-white/10 dark:bg-[#1c1c1e] dark:text-gray-400">
           該当する人が見つかりません
         </div>
       )}

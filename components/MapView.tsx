@@ -114,7 +114,7 @@ export default function MapView({
 
   return (
     <div className="min-h-dvh">
-      <header className="sticky top-0 z-40 border-b border-black/5 bg-[#f5f5f7]/75 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-black/5 bg-[#f5f5f7]/75 backdrop-blur-xl dark:border-white/10 dark:bg-black/60">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2.5">
           <h1>
             <LogoType />
@@ -144,7 +144,7 @@ export default function MapView({
       </header>
 
       <div className="mx-auto flex max-w-6xl flex-col gap-3 p-3 sm:p-4">
-      <div className="space-y-3 rounded-2xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)]">
+      <div className="anim-rise space-y-3 rounded-2xl bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] dark:bg-[#1c1c1e]">
         {me && (
           <MyStatusBar me={me} mySeatLabel={mySeatLabel} onChanged={refetch} />
         )}
@@ -152,7 +152,7 @@ export default function MapView({
       </div>
 
       {floors.length > 1 && (
-        <div className="flex gap-1 overflow-x-auto rounded-xl bg-black/5 p-1">
+        <div className="flex gap-1 overflow-x-auto rounded-xl bg-black/5 p-1 dark:bg-white/10">
           {floors.map((f) => (
             <button
               key={f.id}
@@ -163,8 +163,8 @@ export default function MapView({
               }}
               className={`min-h-10 shrink-0 flex-1 rounded-lg px-4 text-sm font-medium transition-colors ${
                 f.id === floorId
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 active:bg-white/60"
+                  ? "bg-white text-gray-900 shadow-sm dark:bg-[#3a3a3c] dark:text-gray-100"
+                  : "text-gray-500 active:bg-white/60 dark:text-gray-400 dark:active:bg-white/10"
               }`}
             >
               {f.name}
@@ -173,7 +173,7 @@ export default function MapView({
         </div>
       )}
 
-      <div className="relative h-[62vh] overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] sm:h-[68vh]">
+      <div className="anim-rise-2 relative h-[62vh] overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] sm:h-[68vh] dark:bg-[#1c1c1e]">
         {currentFloor ? (
           <FloorMap
             floor={currentFloor}
@@ -187,19 +187,19 @@ export default function MapView({
             }}
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-sm text-gray-500">
+          <div className="flex h-full items-center justify-center text-sm text-gray-500 dark:text-gray-400">
             フロアが未登録です。管理画面から図面を登録してください。
           </div>
         )}
 
         {selectedSeat && (
-          <div className="absolute inset-x-2 bottom-2 z-20 flex items-center justify-between gap-2 rounded-2xl border border-black/5 bg-white/85 p-3.5 text-sm shadow-lg backdrop-blur-xl">
+          <div className="anim-sheet absolute inset-x-2 bottom-2 z-20 flex items-center justify-between gap-2 rounded-2xl border border-black/5 bg-white/85 p-3.5 text-sm shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-[#1c1c1e]/85">
             <div className="min-w-0">
-              <span className="font-bold text-gray-900">
+              <span className="font-bold text-gray-900 dark:text-gray-100">
                 {selectedSeat.label}
               </span>
               {selectedOccupant ? (
-                <span className="ml-2 text-gray-700">
+                <span className="ml-2 text-gray-700 dark:text-gray-300">
                   {selectedOccupant.profile.display_name}
                   {selectedOccupant.profile.department && (
                     <span className="ml-1 text-xs text-gray-500">
@@ -222,12 +222,12 @@ export default function MapView({
                   </span>
                 </span>
               ) : (
-                <span className="ml-2 text-gray-500">空席</span>
+                <span className="ml-2 text-gray-500 dark:text-gray-400">空席</span>
               )}
             </div>
             <button
               onClick={() => setSelectedSeat(null)}
-              className="shrink-0 rounded-full px-2 text-gray-400 hover:text-gray-600"
+              className="press shrink-0 rounded-full px-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
               aria-label="閉じる"
             >
               ✕

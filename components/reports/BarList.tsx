@@ -11,19 +11,19 @@ export default function BarList({
     <ul className="space-y-1.5">
       {items.map((item, i) => (
         <li key={i} className="flex items-center gap-2 text-sm">
-          <span className="w-32 shrink-0 truncate text-gray-700" title={item.label}>
+          <span className="w-32 shrink-0 truncate text-gray-700 dark:text-gray-300" title={item.label}>
             {item.label}
             {item.sub && (
               <span className="ml-1 text-xs text-gray-400">{item.sub}</span>
             )}
           </span>
-          <span className="relative h-5 flex-1 overflow-hidden rounded bg-gray-100">
+          <span className="relative h-5 flex-1 overflow-hidden rounded bg-gray-100 dark:bg-white/10">
             <span
               className="absolute inset-y-0 left-0 rounded bg-blue-500/80"
               style={{ width: `${(item.value / max) * 100}%` }}
             />
           </span>
-          <span className="w-20 shrink-0 text-right text-xs tabular-nums text-gray-600">
+          <span className="w-20 shrink-0 text-right text-xs tabular-nums text-gray-600 dark:text-gray-400">
             {item.display ?? `${item.value}${unit ?? ""}`}
           </span>
         </li>

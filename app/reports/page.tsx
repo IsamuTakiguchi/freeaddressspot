@@ -108,7 +108,7 @@ export default async function ReportsPage({
   return (
     <main className="mx-auto max-w-4xl space-y-6 p-4 sm:p-6">
       <header className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-lg font-bold text-gray-900">利用状況レポート</h1>
+        <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">利用状況レポート</h1>
         <Link href="/map" className="text-sm text-blue-700 hover:underline">
           ← 座席マップ
         </Link>
@@ -122,18 +122,18 @@ export default async function ReportsPage({
             className={`rounded-full px-3 py-1 ${
               (rangeParam ?? "30") === p.key
                 ? "bg-blue-600 text-white"
-                : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                : "border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10"
             }`}
           >
             {p.label}
           </Link>
         ))}
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-gray-500 dark:text-gray-400">
           {range.from} 〜 {range.to}（営業日 {bizDays}日・土日除く）
         </span>
         <a
           href={`/reports/csv?range=${rangeParam ?? "30"}`}
-          className="ml-auto rounded-lg border border-gray-300 bg-white px-3 py-1 text-xs text-gray-700 hover:bg-gray-50"
+          className="ml-auto rounded-lg border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10"
         >
           CSVダウンロード
         </a>
@@ -163,9 +163,9 @@ export default async function ReportsPage({
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-3">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="mt-1 text-xl font-bold text-gray-900">{value}</p>
+    <div className="rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-3">
+      <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="mt-1 text-xl font-bold text-gray-900 dark:text-gray-100">{value}</p>
     </div>
   );
 }
@@ -178,8 +178,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 className="mb-3 text-sm font-bold text-gray-900">{title}</h2>
+    <section className="rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-4">
+      <h2 className="mb-3 text-sm font-bold text-gray-900 dark:text-gray-100">{title}</h2>
       {children}
     </section>
   );

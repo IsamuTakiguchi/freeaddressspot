@@ -34,7 +34,7 @@ export default async function FloorEditPage({
   return (
     <main className="mx-auto max-w-6xl p-4 sm:p-6">
       <header className="mb-4 flex items-center justify-between">
-        <h1 className="text-lg font-bold text-gray-900">
+        <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">
           座席配置: {floor.name}
         </h1>
         <Link href="/admin" className="text-sm text-blue-700 hover:underline">

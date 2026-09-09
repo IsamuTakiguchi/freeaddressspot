@@ -30,7 +30,7 @@ export function LogoType({ size = 28 }: { size?: number }) {
   return (
     <span className="flex items-center gap-2">
       <LogoMark size={size} />
-      <span className="text-lg font-bold tracking-tight text-gray-900">
+      <span className="text-lg font-bold tracking-tight text-gray-900 dark:text-gray-100">
         座席マップ
       </span>
     </span>

@@ -65,7 +65,7 @@ export default function SeatMarker({
       {occupant ? (
         <>
           <span
-            className={`relative flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[11px] font-bold text-white shadow-md ${colorFor(occupant.profile.id)} ${
+            className={`anim-pop relative flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[11px] font-bold text-white shadow-md ${colorFor(occupant.profile.id)} ${
               isMe ? "ring-2 ring-blue-600" : ""
             } ${highlighted ? "ring-2 ring-red-500" : ""}`}
           >

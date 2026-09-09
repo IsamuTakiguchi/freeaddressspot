@@ -66,11 +66,11 @@ export default function AllowedEmailList({
   }
 
   return (
-    <section className="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 className="text-sm font-bold text-gray-900">
+    <section className="rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-4">
+      <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">
         個別許可メールアドレス
       </h2>
-      <p className="mt-1 text-xs text-gray-500">
+      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
         {allowedDomain && allowedDomain !== "*"
           ? `@${allowedDomain} のアカウントは自動で許可されます。それ以外（Gmail等）でログインさせたい人をここに登録してください。`
           : "現在は全ドメイン許可の設定です（ALLOWED_EMAIL_DOMAIN 未設定）。"}
@@ -82,16 +82,16 @@ export default function AllowedEmailList({
         </p>
       )}
 
-      <ul className="mt-3 divide-y divide-gray-100">
+      <ul className="mt-3 divide-y divide-gray-100 dark:divide-white/10">
         {emails.map((x) => (
           <li
             key={x.email}
             className="flex items-center justify-between gap-2 py-2 text-sm"
           >
             <div className="min-w-0">
-              <span className="font-medium text-gray-900">{x.email}</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{x.email}</span>
               {x.note && (
-                <span className="ml-2 text-xs text-gray-500">{x.note}</span>
+                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">{x.note}</span>
               )}
             </div>
             <button
@@ -114,12 +114,12 @@ export default function AllowedEmailList({
           type="email"
           required
           placeholder="taro@gmail.com"
-          className="min-w-52 flex-1 rounded border border-gray-300 px-3 py-1.5 text-sm"
+          className="min-w-52 flex-1 rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1.5 text-sm"
         />
         <input
           ref={noteRef}
           placeholder="メモ（例: 山田さん・業務委託）"
-          className="min-w-40 flex-1 rounded border border-gray-300 px-3 py-1.5 text-sm"
+          className="min-w-40 flex-1 rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1.5 text-sm"
         />
         <button
           disabled={busy}

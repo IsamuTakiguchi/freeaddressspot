@@ -152,7 +152,7 @@ export default function FloorEditor({
           className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
             mode === "edit"
               ? "bg-blue-600 text-white"
-              : "border border-gray-300 bg-white text-gray-700"
+              : "border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] text-gray-700 dark:text-gray-300"
           }`}
         >
           選択・移動
@@ -162,12 +162,12 @@ export default function FloorEditor({
           className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
             mode === "add"
               ? "bg-blue-600 text-white"
-              : "border border-gray-300 bg-white text-gray-700"
+              : "border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] text-gray-700 dark:text-gray-300"
           }`}
         >
           ＋ クリックで座席追加
         </button>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-gray-500 dark:text-gray-400">
           {mode === "add"
             ? "図面上のデスク位置をクリックすると座席が追加されます"
             : "マーカーをドラッグで移動、クリックで選択できます"}
@@ -178,7 +178,7 @@ export default function FloorEditor({
         <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>
       )}
 
-      <div className="h-[60vh] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+      <div className="h-[60vh] overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] shadow-sm">
         <TransformWrapper
           minScale={1}
           maxScale={6}
@@ -223,7 +223,7 @@ export default function FloorEditor({
                       ? "bg-blue-600 text-white ring-2 ring-blue-300"
                       : seat.is_active
                         ? "bg-emerald-500 text-white"
-                        : "bg-gray-300 text-gray-600"
+                        : "bg-gray-300 text-gray-600 dark:text-gray-400"
                   }`}
                   style={{
                     left: `${seat.x * 100}%`,
@@ -249,17 +249,17 @@ export default function FloorEditor({
             onKeyDown={(e) => {
               if (e.key === "Enter") (e.target as HTMLInputElement).blur();
             }}
-            className="w-28 rounded border border-gray-300 px-2 py-1"
+            className="w-28 rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-2 py-1"
           />
           <button
             onClick={() => copyUrl(selected)}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-1 text-xs hover:bg-gray-50"
+            className="rounded-lg border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-white/10"
           >
             {copiedId === selected.id ? "コピーしました ✓" : "チェックインURLをコピー"}
           </button>
           <button
             onClick={() => toggleActive(selected)}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-1 text-xs hover:bg-gray-50"
+            className="rounded-lg border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-white/10"
           >
             {selected.is_active ? "無効化" : "有効化"}
           </button>
@@ -272,18 +272,18 @@ export default function FloorEditor({
         </div>
       )}
 
-      <details className="rounded-lg border border-gray-200 bg-white p-4" open>
-        <summary className="cursor-pointer text-sm font-bold text-gray-900">
+      <details className="rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-4" open>
+        <summary className="cursor-pointer text-sm font-bold text-gray-900 dark:text-gray-100">
           座席一覧とNFCタグ用URL（{seats.length}席）
         </summary>
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
           各URLを「NFC Tools」等のアプリでNFCタグ（NTAG213以上を推奨）にURLレコードとして書き込み、
           該当する座席に貼り付けてください。書き込み後は読み取り専用ロックを推奨します。
         </p>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-gray-200 text-xs text-gray-500">
+              <tr className="border-b border-gray-200 dark:border-white/10 text-xs text-gray-500 dark:text-gray-400">
                 <th className="py-1.5 pr-3">座席</th>
                 <th className="py-1.5 pr-3">チェックインURL</th>
                 <th className="py-1.5">操作</th>
@@ -291,20 +291,20 @@ export default function FloorEditor({
             </thead>
             <tbody>
               {seats.map((seat) => (
-                <tr key={seat.id} className="border-b border-gray-100">
+                <tr key={seat.id} className="border-b border-gray-100 dark:border-white/10">
                   <td className="py-1.5 pr-3 font-medium">
                     {seat.label}
                     {!seat.is_active && (
                       <span className="ml-1 text-xs text-gray-400">(無効)</span>
                     )}
                   </td>
-                  <td className="max-w-xs truncate py-1.5 pr-3 font-mono text-xs text-gray-600">
+                  <td className="max-w-xs truncate py-1.5 pr-3 font-mono text-xs text-gray-600 dark:text-gray-400">
                     {checkinUrl(seat.id)}
                   </td>
                   <td className="py-1.5">
                     <button
                       onClick={() => copyUrl(seat)}
-                      className="rounded border border-gray-300 px-2 py-0.5 text-xs hover:bg-gray-50"
+                      className="rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-2 py-0.5 text-xs hover:bg-gray-50 dark:hover:bg-white/10"
                     >
                       {copiedId === seat.id ? "✓" : "コピー"}
                     </button>

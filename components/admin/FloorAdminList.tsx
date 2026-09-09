@@ -101,11 +101,11 @@ export default function FloorAdminList({
         {floors.map((f) => (
           <li
             key={f.id}
-            className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white p-3"
+            className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-3"
           >
             <div>
-              <p className="font-medium text-gray-900">{f.name}</p>
-              <p className="text-xs text-gray-500">
+              <p className="font-medium text-gray-900 dark:text-gray-100">{f.name}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 {f.image_width}×{f.image_height}px
               </p>
             </div>
@@ -127,7 +127,7 @@ export default function FloorAdminList({
           </li>
         ))}
         {floors.length === 0 && (
-          <li className="rounded-lg border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
+          <li className="rounded-lg border border-dashed border-gray-300 dark:border-white/15 p-6 text-center text-sm text-gray-500 dark:text-gray-400">
             フロアが未登録です。下のフォームから図面を追加してください。
           </li>
         )}
@@ -135,14 +135,14 @@ export default function FloorAdminList({
 
       <form
         onSubmit={addFloor}
-        className="space-y-3 rounded-lg border border-gray-200 bg-white p-4"
+        className="space-y-3 rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-4"
       >
-        <h2 className="text-sm font-bold text-gray-900">フロアを追加</h2>
+        <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">フロアを追加</h2>
         <input
           ref={nameRef}
           placeholder="フロア名（例: 本社 3F）"
           required
-          className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-2 text-sm"
         />
         <input
           ref={fileRef}
@@ -151,7 +151,7 @@ export default function FloorAdminList({
           required
           className="w-full text-sm"
         />
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           オフィス図面の画像（PNG/JPEG/SVG/WebP、8MBまで）をアップロードします
         </p>
         <button
