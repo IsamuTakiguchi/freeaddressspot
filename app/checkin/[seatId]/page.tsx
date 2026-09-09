@@ -40,10 +40,10 @@ export default async function CheckinPage({
   if (!seat || !seat.is_active || flags.invalid) {
     return (
       <Shell>
-        <p className="text-lg font-bold text-gray-900">
+        <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
           この座席は見つかりません
         </p>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           座席が削除されたか、無効化された可能性があります。管理者にお問い合わせください。
         </p>
         <MapLink />
@@ -66,8 +66,35 @@ export default async function CheckinPage({
   if (flags.done) {
     return (
       <Shell>
-        <div className="text-5xl">✅</div>
-        <p className="mt-3 text-lg font-bold text-gray-900">
+        <svg
+          className="check-svg mx-auto"
+          width="72"
+          height="72"
+          viewBox="0 0 56 56"
+          aria-hidden
+        >
+          <circle
+            className="check-circle"
+            cx="28"
+            cy="28"
+            r="25"
+            fill="none"
+            stroke="#34c759"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            transform="rotate(-90 28 28)"
+          />
+          <path
+            className="check-mark"
+            d="M17 29.5 24.5 37 39 21.5"
+            fill="none"
+            stroke="#34c759"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <p className="mt-4 text-lg font-bold text-gray-900 dark:text-gray-100">
           {seatTitle} にチェックインしました
         </p>
         <MapLink primary />
@@ -80,8 +107,8 @@ export default async function CheckinPage({
 
   return (
     <Shell>
-      <p className="text-sm text-gray-500">{floorName}</p>
-      <p className="text-2xl font-bold text-gray-900">{seat.label}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400">{floorName}</p>
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{seat.label}</p>
 
       {flags.conflict && (
         <Alert>他の方が先にチェックインしました。状態を確認してください。</Alert>
@@ -97,13 +124,13 @@ export default async function CheckinPage({
         </>
       ) : isOccupiedByOther ? (
         <>
-          <p className="mt-4 text-sm text-gray-700">
+          <p className="mt-4 text-sm text-gray-700 dark:text-gray-300">
             現在 <span className="font-bold">{occupantName}</span> さんが使用中です
           </p>
           <form action={checkInAction} className="mt-4">
             <input type="hidden" name="seat_id" value={seat.id} />
             <input type="hidden" name="force" value="1" />
-            <button className="w-full rounded-full bg-amber-100 px-4 py-3.5 text-sm font-semibold text-amber-900 transition-colors active:bg-amber-200">
+            <button className="press w-full rounded-full bg-amber-100 px-4 py-3.5 text-sm font-semibold text-amber-900 active:bg-amber-200">
               この席を使う
               <span className="block text-xs font-normal">
                 （{occupantName} さんを退席扱いにします）
@@ -116,7 +143,7 @@ export default async function CheckinPage({
         <>
           <form action={checkInAction} className="mt-6">
             <input type="hidden" name="seat_id" value={seat.id} />
-            <button className="min-h-13 w-full rounded-full bg-blue-600 px-4 text-base font-semibold text-white shadow-sm transition-colors active:bg-blue-700">
+            <button className="press min-h-13 w-full rounded-full bg-blue-600 px-4 text-base font-semibold text-white shadow-sm active:bg-blue-700">
               {mySeatLabel
                 ? `${mySeatLabel} から移動してチェックイン`
                 : "この席にチェックイン"}
@@ -131,8 +158,8 @@ export default async function CheckinPage({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-[#f5f5f7] px-4">
-      <div className="w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_rgba(0,0,0,0.06)]">
+    <main className="flex min-h-dvh items-center justify-center bg-[#f5f5f7] px-4 dark:bg-black">
+      <div className="anim-rise w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_rgba(0,0,0,0.06)] dark:bg-[#1c1c1e]">
         <div className="mb-4 flex justify-center">
           <LogoMark size={40} />
         </div>
@@ -156,7 +183,7 @@ function MapLink({ primary }: { primary?: boolean }) {
       href="/map"
       className={
         primary
-          ? "mt-6 block min-h-13 w-full rounded-full bg-blue-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm transition-colors active:bg-blue-700"
+          ? "press mt-6 block min-h-13 w-full rounded-full bg-blue-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm active:bg-blue-700"
           : "mt-4 block py-2 text-sm font-medium text-blue-600 active:opacity-60"
       }
     >

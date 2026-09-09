@@ -20,7 +20,7 @@ export default async function AdminPage() {
   return (
     <main className="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
       <header className="flex items-center justify-between">
-        <h1 className="text-lg font-bold text-gray-900">管理</h1>
+        <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">管理</h1>
         <div className="flex items-center gap-4">
           <Link href="/map" className="text-sm text-blue-700 hover:underline">
             ← 座席マップ
@@ -30,7 +30,7 @@ export default async function AdminPage() {
       </header>
 
       <section>
-        <h2 className="mb-2 text-sm font-bold text-gray-900">フロア管理</h2>
+        <h2 className="mb-2 text-sm font-bold text-gray-900 dark:text-gray-100">フロア管理</h2>
         <FloorAdminList initialFloors={floors} />
       </section>
 
