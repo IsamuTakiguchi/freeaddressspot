@@ -173,7 +173,7 @@ export default function MapView({
         </div>
       )}
 
-      <div className="anim-rise-2 relative h-[62vh] overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] sm:h-[68vh] dark:bg-[#1c1c1e]">
+      <div className="anim-rise-2 relative h-[calc(100dvh-18.5rem)] min-h-72 overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] dark:bg-[#1c1c1e]">
         {currentFloor ? (
           <FloorMap
             floor={currentFloor}
