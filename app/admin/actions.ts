@@ -226,3 +226,40 @@ export async function removeAllowedEmailAction(
   ]);
   return { ok: true, data: undefined };
 }
+
+// フロア図面の差し替え（座席・NFCタグはそのまま維持される）
+export async function updateFloorImageAction(
+  formData: FormData
+): Promise<ActionResult> {
+  await requireAdmin("/admin");
+
+  const floorId = String(formData.get("floor_id") ?? "");
+  const file = formData.get("image");
+  const width = Number(formData.get("width"));
+  const height = Number(formData.get("height"));
+
+  if (!floorId) return { ok: false, error: "フロアが指定されていません" };
+  if (!(file instanceof File) || file.size === 0)
+    return { ok: false, error: "図面画像を選択してください" };
+  if (!ALLOWED_MIME.has(file.type))
+    return { ok: false, error: "画像はPNG/JPEG/SVG/WebPのみ対応です" };
+  if (file.size > MAX_IMAGE_BYTES)
+    return { ok: false, error: "画像サイズは8MB以下にしてください" };
+  if (
+    !Number.isInteger(width) ||
+    !Number.isInteger(height) ||
+    width <= 0 ||
+    height <= 0
+  )
+    return { ok: false, error: "画像サイズを取得できませんでした" };
+
+  const buf = Buffer.from(await file.arrayBuffer());
+  await query(
+    `update floors
+        set image_data = $1, image_mime = $2, image_width = $3,
+            image_height = $4, image_updated_at = now()
+      where id = $5`,
+    [buf, file.type, width, height, floorId]
+  );
+  return { ok: true, data: undefined };
+}
