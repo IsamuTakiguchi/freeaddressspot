@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   createFloorAction,
   deleteFloorAction,
+  updateFloorImageAction,
   type AdminFloor,
 } from "@/app/admin/actions";
 
@@ -34,6 +35,49 @@ export default function FloorAdminList({
   const [error, setError] = useState<string | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const replaceRef = useRef<HTMLInputElement>(null);
+  const [replaceTarget, setReplaceTarget] = useState<AdminFloor | null>(null);
+
+  // 「図面を差し替え」: 座席とNFCタグはそのまま、画像だけ更新する
+  function startReplace(floor: AdminFloor) {
+    setReplaceTarget(floor);
+    replaceRef.current?.click();
+  }
+
+  async function onReplaceFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    const target = replaceTarget;
+    e.target.value = "";
+    if (!file || !target) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const { width, height } = await readImageSize(file);
+      const formData = new FormData();
+      formData.set("floor_id", target.id);
+      formData.set("image", file);
+      formData.set("width", String(width));
+      formData.set("height", String(height));
+      const result = await updateFloorImageAction(formData);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setFloors(
+        floors.map((f) =>
+          f.id === target.id
+            ? { ...f, image_width: width, image_height: height }
+            : f
+        )
+      );
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+      setReplaceTarget(null);
+    }
+  }
 
   async function addFloor(e: React.FormEvent) {
     e.preventDefault();
@@ -93,6 +137,13 @@ export default function FloorAdminList({
 
   return (
     <div className="space-y-4">
+      <input
+        ref={replaceRef}
+        type="file"
+        accept="image/png,image/jpeg,image/svg+xml,image/webp"
+        onChange={onReplaceFile}
+        hidden
+      />
       {error && (
         <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>
       )}
@@ -109,13 +160,21 @@ export default function FloorAdminList({
                 {f.image_width}×{f.image_height}px
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-2">
               <Link
                 href={`/admin/floors/${f.id}`}
                 className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
               >
                 座席を配置
               </Link>
+              <button
+                onClick={() => startReplace(f)}
+                disabled={busy}
+                className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-white/15 dark:bg-[#2c2c2e] dark:text-gray-300 dark:hover:bg-white/10"
+                title="座席とNFCタグはそのままで図面画像だけ更新します"
+              >
+                図面を差し替え
+              </button>
               <button
                 onClick={() => removeFloor(f)}
                 disabled={busy}
