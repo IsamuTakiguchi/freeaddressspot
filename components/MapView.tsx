@@ -17,6 +17,9 @@ import OffsiteList from "@/components/OffsiteList";
 import LogoutButton from "@/components/LogoutButton";
 import { LogoType } from "@/components/Logo";
 
+// マップ枠の高さ上限（ヘッダー・ステータスバー・余白を除いた画面の残り）
+const MAP_MAX_HEIGHT = "calc(100dvh - 16rem)";
+
 export default function MapView({
   floors,
   seats,
@@ -146,7 +149,22 @@ export default function MapView({
         </div>
       )}
 
-      <div className="anim-rise-2 relative h-[calc(100dvh-14.5rem)] min-h-72 overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] dark:bg-[#1c1c1e]">
+      <div
+        className="anim-rise-2 relative mx-auto w-full overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.05)] dark:bg-[#1c1c1e]"
+        style={
+          currentFloor
+            ? {
+                // 図面と同じ縦横比の枠にして余白をなくす。
+                // 画面に収まらないときは高さを上限にし、幅も比率どおり縮める
+                aspectRatio: `${currentFloor.image_width} / ${currentFloor.image_height}`,
+                maxHeight: MAP_MAX_HEIGHT,
+                maxWidth: `calc(${MAP_MAX_HEIGHT} * ${
+                  currentFloor.image_width / currentFloor.image_height
+                })`,
+              }
+            : { height: "50vh" }
+        }
+      >
         {currentFloor ? (
           <FloorMap
             floor={currentFloor}
