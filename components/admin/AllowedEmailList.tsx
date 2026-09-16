@@ -66,7 +66,7 @@ export default function AllowedEmailList({
   }
 
   return (
-    <section className="rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-4">
+    <section className="glass rounded-2xl p-4">
       <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">
         個別許可メールアドレス
       </h2>
@@ -77,7 +77,7 @@ export default function AllowedEmailList({
       </p>
 
       {error && (
-        <p className="mt-2 rounded-lg bg-red-50 p-2 text-sm text-red-700">
+        <p className="mt-2 glass-thin rounded-2xl p-2 text-sm font-medium text-red-600">
           {error}
         </p>
       )}
@@ -114,16 +114,16 @@ export default function AllowedEmailList({
           type="email"
           required
           placeholder="taro@gmail.com"
-          className="min-w-52 flex-1 rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1.5 text-sm"
+          className="min-w-52 flex-1 glass-field rounded-xl border-0 px-3 py-1.5 text-sm"
         />
         <input
           ref={noteRef}
           placeholder="メモ（例: 山田さん・業務委託）"
-          className="min-w-40 flex-1 rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1.5 text-sm"
+          className="min-w-40 flex-1 glass-field rounded-xl border-0 px-3 py-1.5 text-sm"
         />
         <button
           disabled={busy}
-          className="rounded-lg bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          className="press sheen glass-accent rounded-full px-5 py-1.5 text-sm font-semibold disabled:opacity-50"
         >
           追加
         </button>

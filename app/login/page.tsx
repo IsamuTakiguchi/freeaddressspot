@@ -31,8 +31,8 @@ export default async function LoginPage({
     process.env.NODE_ENV !== "production";
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-[#f5f5f7] px-4 dark:bg-black">
-      <div className="anim-rise w-full max-w-sm rounded-3xl bg-white p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_rgba(0,0,0,0.06)] dark:bg-[#1c1c1e]">
+    <main className="flex min-h-dvh items-center justify-center px-4">
+      <div className="anim-rise glass w-full max-w-sm rounded-[28px] p-8">
         <div className="flex justify-center">
           <LogoMark size={56} />
         </div>
@@ -45,7 +45,7 @@ export default async function LoginPage({
           会社のGoogleアカウントでログインしてください
         </p>
         {errorMessage && (
-          <p className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+          <p className="glass-thin mt-4 rounded-2xl p-3 text-sm font-medium text-red-600">
             {errorMessage}
           </p>
         )}
@@ -53,7 +53,7 @@ export default async function LoginPage({
           <input type="hidden" name="next" value={next} />
           <button
             type="submit"
-            className="press flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-black/5 px-4 text-sm font-semibold text-[#1d1d1f] hover:bg-black/[0.08] active:bg-black/10 dark:bg-white/10 dark:text-gray-100 dark:hover:bg-white/15 dark:active:bg-white/20"
+            className="press sheen glass-thin flex min-h-12 w-full items-center justify-center gap-3 rounded-full px-4 text-sm font-semibold text-[#1d1d1f] dark:text-gray-100"
           >
             <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden>
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -68,7 +68,7 @@ export default async function LoginPage({
         {devLogin && (
           <form
             action={devSignInAction}
-            className="mt-6 space-y-2 rounded-lg border border-dashed border-amber-300 bg-amber-50 p-3"
+            className="glass-thin mt-6 space-y-2 rounded-2xl p-3"
           >
             <p className="text-xs font-medium text-amber-800">
               開発用ログイン（ENABLE_DEV_LOGIN=1）
@@ -79,11 +79,11 @@ export default async function LoginPage({
               type="email"
               required
               placeholder="dev@example.co.jp"
-              className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm dark:border-white/15 dark:bg-[#2c2c2e]"
+              className="glass-field w-full rounded-xl border-0 px-3 py-2 text-sm dark:text-gray-100"
             />
             <button
               type="submit"
-              className="w-full rounded bg-amber-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-amber-700"
+              className="press sheen w-full rounded-xl bg-amber-600 px-3 py-2 text-sm font-semibold text-white"
             >
               このメールアドレスでログイン
             </button>

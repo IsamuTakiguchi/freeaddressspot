@@ -30,7 +30,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {/* 背景のオーロラ。ガラス面がこの光を屈折させる */}
+        <div className="aurora" aria-hidden>
+          <span className="a1" />
+          <span className="a2" />
+          <span className="a3" />
+        </div>
+        {children}
+      </body>
     </html>
   );
 }

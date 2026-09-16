@@ -65,7 +65,7 @@ export default function SeatMarker({
       {occupant ? (
         <>
           <span
-            className={`anim-pop relative flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[11px] font-bold text-white shadow-md ${colorFor(occupant.profile.id)} ${
+            className={`anim-pop lg-bubble relative flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/90 text-[11px] font-bold text-white ${colorFor(occupant.profile.id)} ${
               isMe ? "ring-2 ring-blue-600" : ""
             } ${highlighted ? "ring-2 ring-red-500" : ""}`}
           >
@@ -82,17 +82,17 @@ export default function SeatMarker({
             )}
             {status && (
               <span
-                className={`absolute -right-1 -top-1 h-3 w-3 rounded-full border border-white ${STATUS_COLORS[status]}`}
+                className={`absolute -right-1 -top-1 z-10 h-3 w-3 rounded-full border border-white shadow-sm ${STATUS_COLORS[status]}`}
               />
             )}
           </span>
-          <span className="mt-0.5 max-w-24 truncate rounded-full bg-white/95 px-1.5 py-px text-[10px] font-medium leading-tight text-gray-800 shadow-sm ring-1 ring-gray-900/10">
+          <span className="lg-tag anim-pop mt-1 max-w-24 truncate rounded-full px-2 py-0.5 text-[10px] font-semibold leading-tight">
             {occupant.profile.display_name}
           </span>
         </>
       ) : (
         <span
-          className={`h-3.5 w-3.5 rounded-full border-2 border-gray-400 bg-white/80 ${
+          className={`lg-bead relative h-3.5 w-3.5 rounded-full ${
             highlighted ? "ring-2 ring-red-500" : ""
           }`}
         />

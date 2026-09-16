@@ -130,7 +130,7 @@ export default async function CheckinPage({
           <form action={checkInAction} className="mt-4">
             <input type="hidden" name="seat_id" value={seat.id} />
             <input type="hidden" name="force" value="1" />
-            <button className="press w-full rounded-full bg-amber-100 px-4 py-3.5 text-sm font-semibold text-amber-900 active:bg-amber-200">
+            <button className="press sheen glass-thin w-full rounded-full px-4 py-3.5 text-sm font-semibold text-amber-800">
               この席を使う
               <span className="block text-xs font-normal">
                 （{occupantName} さんを退席扱いにします）
@@ -143,7 +143,7 @@ export default async function CheckinPage({
         <>
           <form action={checkInAction} className="mt-6">
             <input type="hidden" name="seat_id" value={seat.id} />
-            <button className="press min-h-13 w-full rounded-full bg-blue-600 px-4 text-base font-semibold text-white shadow-sm active:bg-blue-700">
+            <button className="press sheen glass-accent min-h-13 w-full rounded-full px-4 text-base font-semibold">
               {mySeatLabel
                 ? `${mySeatLabel} から移動してチェックイン`
                 : "この席にチェックイン"}
@@ -158,8 +158,8 @@ export default async function CheckinPage({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-[#f5f5f7] px-4 dark:bg-black">
-      <div className="anim-rise w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_rgba(0,0,0,0.06)] dark:bg-[#1c1c1e]">
+    <main className="flex min-h-dvh items-center justify-center px-4">
+      <div className="anim-rise glass w-full max-w-sm rounded-[28px] p-8 text-center">
         <div className="mb-4 flex justify-center">
           <LogoMark size={40} />
         </div>
@@ -171,7 +171,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function Alert({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+    <p className="glass-thin mt-4 rounded-2xl p-3 text-sm font-medium text-amber-800">
       {children}
     </p>
   );
@@ -183,7 +183,7 @@ function MapLink({ primary }: { primary?: boolean }) {
       href="/map"
       className={
         primary
-          ? "press mt-6 block min-h-13 w-full rounded-full bg-blue-600 px-4 py-3.5 text-base font-semibold text-white shadow-sm active:bg-blue-700"
+          ? "press sheen glass-accent mt-6 block min-h-13 w-full rounded-full px-4 py-3.5 text-base font-semibold"
           : "mt-4 block py-2 text-sm font-medium text-blue-600 active:opacity-60"
       }
     >
