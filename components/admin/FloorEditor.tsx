@@ -149,20 +149,20 @@ export default function FloorEditor({
       <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={() => setMode("edit")}
-          className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
+          className={`press sheen rounded-full px-4 py-1.5 text-sm font-semibold ${
             mode === "edit"
-              ? "bg-blue-600 text-white"
-              : "border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] text-gray-700 dark:text-gray-300"
+              ? "glass-accent"
+              : "glass-thin text-gray-700 dark:text-gray-300"
           }`}
         >
           選択・移動
         </button>
         <button
           onClick={() => setMode("add")}
-          className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
+          className={`press sheen rounded-full px-4 py-1.5 text-sm font-semibold ${
             mode === "add"
-              ? "bg-blue-600 text-white"
-              : "border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] text-gray-700 dark:text-gray-300"
+              ? "glass-accent"
+              : "glass-thin text-gray-700 dark:text-gray-300"
           }`}
         >
           ＋ クリックで座席追加
@@ -175,10 +175,10 @@ export default function FloorEditor({
       </div>
 
       {error && (
-        <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>
+        <p className="glass-thin rounded-2xl p-3 text-sm font-medium text-red-600">{error}</p>
       )}
 
-      <div className="h-[60vh] overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] shadow-sm">
+      <div className="glass glass-frame h-[60vh] overflow-hidden rounded-3xl">
         <TransformWrapper
           minScale={1}
           maxScale={6}
@@ -241,7 +241,7 @@ export default function FloorEditor({
       </div>
 
       {selected && (
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm">
+        <div className="anim-drop glass flex flex-wrap items-center gap-2 rounded-2xl p-3 text-sm">
           <input
             key={selected.id}
             defaultValue={selected.label}
@@ -249,30 +249,30 @@ export default function FloorEditor({
             onKeyDown={(e) => {
               if (e.key === "Enter") (e.target as HTMLInputElement).blur();
             }}
-            className="w-28 rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-2 py-1"
+            className="w-28 glass-field rounded-xl border-0 px-2 py-1"
           />
           <button
             onClick={() => copyUrl(selected)}
-            className="rounded-lg border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-white/10"
+            className="press sheen glass-thin rounded-full px-3.5 py-1 text-xs"
           >
             {copiedId === selected.id ? "コピーしました ✓" : "チェックインURLをコピー"}
           </button>
           <button
             onClick={() => toggleActive(selected)}
-            className="rounded-lg border border-gray-300 bg-white dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-white/10"
+            className="press sheen glass-thin rounded-full px-3.5 py-1 text-xs"
           >
             {selected.is_active ? "無効化" : "有効化"}
           </button>
           <button
             onClick={() => removeSeat(selected)}
-            className="rounded-lg border border-red-200 bg-white px-3 py-1 text-xs text-red-600 hover:bg-red-50"
+            className="press sheen glass-thin rounded-full px-3.5 py-1 text-xs text-red-600"
           >
             削除
           </button>
         </div>
       )}
 
-      <details className="rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-4" open>
+      <details className="glass rounded-2xl p-4" open>
         <summary className="cursor-pointer text-sm font-bold text-gray-900 dark:text-gray-100">
           座席一覧とNFCタグ用URL（{seats.length}席）
         </summary>
@@ -304,7 +304,7 @@ export default function FloorEditor({
                   <td className="py-1.5">
                     <button
                       onClick={() => copyUrl(seat)}
-                      className="rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-2 py-0.5 text-xs hover:bg-gray-50 dark:hover:bg-white/10"
+                      className="press sheen glass-thin rounded-full px-2.5 py-0.5 text-xs"
                     >
                       {copiedId === seat.id ? "✓" : "コピー"}
                     </button>

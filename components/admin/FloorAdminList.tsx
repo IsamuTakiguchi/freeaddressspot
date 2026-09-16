@@ -145,14 +145,14 @@ export default function FloorAdminList({
         hidden
       />
       {error && (
-        <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>
+        <p className="glass-thin rounded-2xl p-3 text-sm font-medium text-red-600">{error}</p>
       )}
 
       <ul className="space-y-2">
         {floors.map((f) => (
           <li
             key={f.id}
-            className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-3"
+            className="flex items-center justify-between gap-2 glass rounded-2xl p-3"
           >
             <div>
               <p className="font-medium text-gray-900 dark:text-gray-100">{f.name}</p>
@@ -163,14 +163,14 @@ export default function FloorAdminList({
             <div className="flex flex-wrap items-center justify-end gap-2">
               <Link
                 href={`/admin/floors/${f.id}`}
-                className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
+                className="press sheen glass-accent rounded-full px-4 py-1.5 text-sm font-semibold"
               >
                 座席を配置
               </Link>
               <button
                 onClick={() => startReplace(f)}
                 disabled={busy}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-white/15 dark:bg-[#2c2c2e] dark:text-gray-300 dark:hover:bg-white/10"
+                className="press sheen glass-thin rounded-full px-3.5 py-1.5 text-sm text-gray-700 disabled:opacity-50 dark:text-gray-300"
                 title="座席とNFCタグはそのままで図面画像だけ更新します"
               >
                 図面を差し替え
@@ -178,7 +178,7 @@ export default function FloorAdminList({
               <button
                 onClick={() => removeFloor(f)}
                 disabled={busy}
-                className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                className="press sheen glass-thin rounded-full px-3.5 py-1.5 text-sm text-red-600 disabled:opacity-50"
               >
                 削除
               </button>
@@ -194,14 +194,14 @@ export default function FloorAdminList({
 
       <form
         onSubmit={addFloor}
-        className="space-y-3 rounded-lg border border-gray-200 bg-white dark:border-white/10 dark:bg-[#1c1c1e] p-4"
+        className="space-y-3 glass rounded-2xl p-4"
       >
         <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">フロアを追加</h2>
         <input
           ref={nameRef}
           placeholder="フロア名（例: 本社 3F）"
           required
-          className="w-full rounded border border-gray-300 dark:border-white/15 dark:bg-[#2c2c2e] px-3 py-2 text-sm"
+          className="w-full glass-field rounded-xl border-0 px-3 py-2 text-sm"
         />
         <input
           ref={fileRef}
@@ -215,7 +215,7 @@ export default function FloorAdminList({
         </p>
         <button
           disabled={busy}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          className="press sheen glass-accent rounded-full px-5 py-2 text-sm font-semibold disabled:opacity-50"
         >
           {busy ? "追加中..." : "フロアを追加"}
         </button>

@@ -18,7 +18,7 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
+    <main className="anim-rise mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
       <header className="flex items-center justify-between">
         <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">管理</h1>
         <div className="flex items-center gap-4">
